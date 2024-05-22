@@ -1,6 +1,7 @@
 <script setup>
 	import { RouterLink, RouterView } from "vue-router";
 	import navBarLeft from "@/components/navBarLeft.vue";
+	console.log(import.meta.env);
 </script>
 
 <template>

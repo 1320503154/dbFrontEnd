@@ -1,5 +1,5 @@
 const devConfig = {
-	apiBaseUrl: "http://localhost:3000",
+	apiBaseUrl: "/api",
 	timeout: 1000,
 };
 export default devConfig;
