@@ -1,25 +1,30 @@
 <template>
 	<div>
+		<!-- 搜索表单 -->
 		<el-form
 			:inline="true"
 			:model="searchForm">
 			<el-form-item>
+				<!-- 输入框 -->
 				<el-input
 					v-model="searchForm.name"
-					placeholder="请输入作物名"
+					placeholder="请输入人才名"
 					clearable></el-input>
 			</el-form-item>
 			<el-form-item>
+				<!-- 查询按钮 -->
 				<el-button @click="getDataList">查询</el-button>
 			</el-form-item>
 		</el-form>
 
+		<!-- 新建按钮 -->
 		<el-button
 			type="primary"
 			@click="addOrUpdateHandle"
 			size="small"
 			>新建</el-button
 		>
+		<!-- 批量删除按钮 -->
 		<el-button
 			type="danger"
 			@click="deleteHandle"
@@ -27,6 +32,7 @@
 			>批量删除</el-button
 		>
 
+		<!-- 表格 -->
 		<el-table
 			:data="dataList"
 			style="width: 100%"
@@ -45,6 +51,7 @@
 				fixed="right"
 				width="150">
 				<template #default="scope">
+					<!-- 操作按钮 -->
 					<el-button
 						type="text"
 						size="small"
@@ -67,6 +74,7 @@
 			</el-table-column>
 		</el-table>
 
+		<!-- 分页 -->
 		<el-pagination
 			@size-change="sizeChangeHandle"
 			@current-change="currentChangeHandle"
@@ -76,6 +84,7 @@
 			:total="totalPage"
 			layout="total, sizes, prev, pager, next, jumper"></el-pagination>
 
+		<!-- 新增/修改组件 -->
 		<AddOrUpdate
 			v-if="addOrUpdateVisible"
 			ref="addOrUpdate"
@@ -98,6 +107,7 @@
 	const addOrUpdateVisible = ref(false);
 
 	const getDataList = () => {
+		// 发起获取数据请求
 		LHG({
 			url: "/pesticide/crop/list",
 			method: "get",
@@ -118,6 +128,7 @@
 	};
 
 	const addOrUpdateHandle = (id) => {
+		// 处理新增/修改操作
 		addOrUpdateVisible.value = true;
 		nextTick(() => {
 			addOrUpdateRef.value.init(id);
@@ -125,6 +136,7 @@
 	};
 
 	const showDetails = (id) => {
+		// 展示详情
 		addOrUpdateVisible.value = true;
 		nextTick(() => {
 			addOrUpdateRef.value.init(id, true);
@@ -132,6 +144,7 @@
 	};
 
 	const deleteHandle = (id) => {
+		// 处理删除操作
 		let ids = id ? [id] : dataListSelections.value.map((item) => item.id);
 		ElMessageBox.confirm("确定对所选项进行[删除]操作?", "提示", {
 			confirmButtonText: "确定",
@@ -158,16 +171,19 @@
 	};
 
 	const selectionChangeHandle = (val) => {
+		// 处理表格选择事件
 		dataListSelections.value = val;
 	};
 
 	const sizeChangeHandle = (val) => {
+		// 处理分页大小变化
 		pageSize.value = val;
 		pageIndex.value = 1;
 		getDataList();
 	};
 
 	const currentChangeHandle = (val) => {
+		// 处理当前页变化
 		pageIndex.value = val;
 		getDataList();
 	};
@@ -175,6 +191,7 @@
 	const addOrUpdateRef = ref(null);
 
 	onMounted(() => {
+		// 组件挂载时获取数据
 		getDataList();
 	});
 </script>

@@ -25,7 +25,7 @@
 </script>
 <template>
 	<div>
-		<h1>console.log('In AddManager.vue ::: ', );</h1>
+		<h1>console.log('In AddTalent.vue ::: ', );</h1>
 	</div>
 </template>
 
