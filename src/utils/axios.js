@@ -1,8 +1,8 @@
 import axios from "axios";
-import dev from "@/config/dev";
+const { VITE_APP_URL, VITE_APP_TIMEOUT } = import.meta.env;
 const LHG = axios.create({
-	baseURL: dev.apiBaseUrl,
-	timeout: dev.timeout,
+	baseURL: VITE_APP_URL, //baseURL='http://127.0.0.1:8084/api'
+	timeout: VITE_APP_TIMEOUT,
 });
 LHG.interceptors.request.use(
 	(config) => {

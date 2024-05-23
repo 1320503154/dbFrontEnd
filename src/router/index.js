@@ -22,72 +22,138 @@ const routes = [
 		path: "/",
 		name: "Home",
 		component: HomeView,
+		meta: { title: "首页" },
 	},
 	{
 		path: "/about",
 		name: "About",
 		component: AboutView,
+		meta: { title: "关于" },
 	},
 	{
 		path: "/login",
 		name: "Login",
 		component: LoginView,
-		meta: {
-			requiresAuth: false,
-		},
+		meta: { requiresAuth: false, title: "登录" },
 	},
 	{
 		path: "/talent",
 		name: "Talent",
-		component: HomeView, // 假设 HomeView 是主组件
+		component: HomeView,
+		meta: { title: "人才" },
 		children: [
-			{ path: "add", name: "AddTalent", component: AddTalent },
-			{ path: "view", name: "ViewTalent", component: ViewTalent },
+			{
+				path: "add",
+				name: "AddTalent",
+				component: AddTalent,
+				meta: { title: "添加人才" },
+			},
+			{
+				path: "view",
+				name: "ViewTalent",
+				component: ViewTalent,
+				meta: { title: "浏览人才" },
+			},
 		],
 	},
 	{
 		path: "/application",
 		name: "Application",
-		component: HomeView, // 假设 HomeView 是主组件
+		component: HomeView,
+		meta: { title: "申请" },
 		children: [
-			{ path: "add", name: "AddApplication", component: AddApplication },
-			{ path: "view", name: "ViewApplication", component: ViewApplication },
+			{
+				path: "add",
+				name: "AddApplication",
+				component: AddApplication,
+				meta: { title: "添加申请" },
+			},
+			{
+				path: "view",
+				name: "ViewApplication",
+				component: ViewApplication,
+				meta: { title: "浏览申请" },
+			},
 		],
 	},
 	{
 		path: "/position",
 		name: "Position",
-		component: HomeView, // 假设 HomeView 是主组件
+		component: HomeView,
+		meta: { title: "岗位" },
 		children: [
-			{ path: "add", name: "AddPosition", component: AddPosition },
-			{ path: "view", name: "ViewPosition", component: ViewPosition },
+			{
+				path: "add",
+				name: "AddPosition",
+				component: AddPosition,
+				meta: { title: "添加岗位" },
+			},
+			{
+				path: "view",
+				name: "ViewPosition",
+				component: ViewPosition,
+				meta: { title: "浏览岗位" },
+			},
 		],
 	},
 	{
 		path: "/company",
 		name: "Company",
-		component: HomeView, // 假设 HomeView 是主组件
+		component: HomeView,
+		meta: { title: "公司" },
 		children: [
-			{ path: "add", name: "AddCompany", component: AddCompany },
-			{ path: "view", name: "ViewCompany", component: ViewCompany },
+			{
+				path: "add",
+				name: "AddCompany",
+				component: AddCompany,
+				meta: { title: "添加公司" },
+			},
+			{
+				path: "view",
+				name: "ViewCompany",
+				component: ViewCompany,
+				meta: { title: "查看公司" },
+			},
 		],
 	},
 	{
 		path: "/manager",
 		name: "Manager",
-		component: HomeView, // 假设 HomeView 是主组件
+		component: HomeView,
+		meta: { title: "经理" },
 		children: [
-			{ path: "add", name: "AddManager", component: AddManager },
-			{ path: "view", name: "ViewManager", component: ViewManager },
+			{
+				path: "add",
+				name: "AddManager",
+				component: AddManager,
+				meta: { title: "添加经理" },
+			},
+			{
+				path: "view",
+				name: "ViewManager",
+				component: ViewManager,
+				meta: { title: "查看经理" },
+			},
 		],
 	},
 	{
 		path: "/degree",
 		name: "Degree",
-		component: HomeView, // 假设 HomeView 是主组件
+		component: HomeView,
+		meta: { title: "学位" },
 		children: [
-			{ path: "add", name: "AddDegree", component: AddDegree },
-			{ path: "view", name: "ViewDegree", component: ViewDegree },
+			{
+				path: "add",
+				name: "AddDegree",
+				component: AddDegree,
+				meta: { title: "添加学位" },
+			},
+			{
+				path: "view",
+				name: "ViewDegree",
+				component: ViewDegree,
+				meta: { title: "查看学位" },
+			},
 		],
 	},
 ];
