@@ -24,7 +24,7 @@ const routes = [
 		name: "Home",
 		component: HomeView,
 		meta: {
-			requiresAuth: false,
+			requiresAuth: true,
 			title: "首页",
 			breadcrumb: [{ name: "首页", path: "/" }],
 		},
@@ -311,9 +311,14 @@ const router = createRouter({
 // 全局前置守卫
 router.beforeEach((to, from, next) => {
 	const userStore = useUserStore();
-	console.info("🚀 ~ file:index.js method: line:173 -----", userStore.userInfo);
+	const userInfo = userStore.getUserInfo();
+	let isAuthenticated = false;
+	if (userInfo) {
+		isAuthenticated = true;
+	} else {
+		isAuthenticated = false;
+	}
 
-	const isAuthenticated = true;
 	if (to.matched.some((record) => record.meta.requiresAuth)) {
 		// 需要认证的路由
 		if (!isAuthenticated) {
