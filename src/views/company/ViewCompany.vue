@@ -1,197 +1,239 @@
 <template>
-	<div>
-		<!-- 搜索表单 -->
-		<el-form
-			:inline="true"
-			:model="searchForm">
-			<el-form-item>
-				<!-- 输入框 -->
-				<el-input
-					v-model="searchForm.name"
-					placeholder="请输入作物名"
-					clearable></el-input>
-			</el-form-item>
-			<el-form-item>
-				<!-- 查询按钮 -->
-				<el-button @click="getDataList">查询</el-button>
-			</el-form-item>
-		</el-form>
+  <div>
+    <!-- 搜索表单 -->
+    <el-form
+        :inline="true"
+        :model="searchForm">
+      <el-form-item>
+        <!-- 输入框 -->
+        <el-input
+            v-model="searchForm.companyName"
+            placeholder="请输入公司名"
+            clearable></el-input>
+      </el-form-item>
+      <el-form-item>
+        <!-- 查询按钮 -->
+        <el-button @click="getDataList">查询</el-button>
+      </el-form-item>
+    </el-form>
 
-		<!-- 新建按钮 -->
-		<el-button
-			type="primary"
-			@click="addOrUpdateHandle"
-			size="small"
-			>新建</el-button
-		>
-		<!-- 批量删除按钮 -->
-		<el-button
-			type="danger"
-			@click="deleteHandle"
-			:disabled="dataListSelections.length <= 0"
-			>批量删除</el-button
-		>
+    <!-- 新建按钮 -->
+    <add-company></add-company>
+    <!-- 批量删除按钮 -->
+    <el-button
+        type="danger"
+        @click="deleteSelectionsHandle"
+        :disabled="dataListSelections.length <= 0"
+    >批量删除</el-button
+    >
 
-		<!-- 表格 -->
-		<el-table
-			:data="dataList"
-			style="width: 100%"
-			@selection-change="selectionChangeHandle">
-			<el-table-column
-				type="selection"
-				width="50"></el-table-column>
-			<el-table-column
-				prop="cropName"
-				label="作物名"></el-table-column>
-			<el-table-column
-				prop="orderNum"
-				label="排序号"></el-table-column>
-			<el-table-column
-				label="操作"
-				fixed="right"
-				width="150">
-				<template #default="scope">
-					<!-- 操作按钮 -->
-					<el-button
-						type="text"
-						size="small"
-						@click="addOrUpdateHandle(scope.row.id)"
-						>修改</el-button
-					>
-					<el-button
-						type="text"
-						size="small"
-						@click="showDetails(scope.row.id)"
-						>查看</el-button
-					>
-					<el-button
-						type="text"
-						size="small"
-						@click="deleteHandle(scope.row.id)"
-						>删除</el-button
-					>
-				</template>
-			</el-table-column>
-		</el-table>
+    <!-- 表格 -->
+    <el-table
+        :data="dataList"
+        style="width: 100%"
+        @selection-change="selectionChangeHandle">
+      <el-table-column
+          type="selection"
+          width="50"></el-table-column>
+      <el-table-column prop="companyId" label="公司ID" width="100"></el-table-column>
+      <el-table-column
+          prop="companyName"
+          label="公司名"></el-table-column>
+      <el-table-column
+          prop="contactName"
+          label="联系人"></el-table-column>
+      <el-table-column
+          prop="contactPhone"
+          label="联系电话"></el-table-column>
+      <el-table-column
+          prop="address"
+          label="地址"></el-table-column>
+      <el-table-column
+          prop="companyIntro"
+          label="公司简介"></el-table-column>
+      <el-table-column
+          label="操作"
+          fixed="right"
+          width="150">
+        <template #default="scope">
+          <!-- 操作按钮 -->
+          <el-button
+              link
+              size="small"
+              @click="updateData(scope.row.companyId)"
+          >修改</el-button
+          >
+          <el-button
+              link
+              size="small"
+              @click="showDetails(scope.row.companyId)"
+          >查看</el-button
+          >
+          <el-button
+              link
+              size="small"
+              @click="deleteHandle(scope.row.companyName, scope.row.companyId)"
+          >删除</el-button
+          >
+        </template>
+      </el-table-column>
+    </el-table>
 
-		<!-- 分页 -->
-		<el-pagination
-			@size-change="sizeChangeHandle"
-			@current-change="currentChangeHandle"
-			:current-page="pageIndex"
-			:page-sizes="[10, 20, 50, 100]"
-			:page-size="pageSize"
-			:total="totalPage"
-			layout="total, sizes, prev, pager, next, jumper"></el-pagination>
-
-		<!-- 新增/修改组件 -->
-		<AddOrUpdate
-			v-if="addOrUpdateVisible"
-			ref="addOrUpdate"
-			@refreshDataList="getDataList"></AddOrUpdate>
-	</div>
+    <!-- 分页 -->
+    <el-pagination
+        @size-change="sizeChangeHandle"
+        @current-change="currentChangeHandle"
+        :current-page="pageIndex"
+        :page-sizes="[10, 20, 50, 100]"
+        :page-size="pageSize"
+        :total="totalPage"
+        layout="total, sizes, prev, pager, next, jumper"></el-pagination>
+  </div>
 </template>
 
 <script setup>
-	import { ref, reactive, onMounted, nextTick } from "vue";
-	import LHG from "@/utils/axios";
-	const searchForm = reactive({
-		name: "",
-	});
+import { ref, reactive, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import LHG from "@/utils/axios.js";
+import { ElMessage, ElMessageBox } from "element-plus";
+import AddCompany from "@/views/company/AddCompany.vue";
+const router = useRouter();
 
-	const dataList = ref([]);
-	const dataListSelections = ref([]);
-	const pageIndex = ref(1);
-	const pageSize = ref(10);
-	const totalPage = ref(0);
-	const addOrUpdateVisible = ref(false);
+const searchForm = reactive({
+  companyName: "",
+});
 
-	const getDataList = () => {
-		// 发起获取数据请求
-		LHG({
-			url: "/pesticide/crop/list",
-			method: "get",
-			params: {
-				page: pageIndex.value,
-				limit: pageSize.value,
-				name: searchForm.name,
-			},
-		}).then(({ data }) => {
-			if (data && data.code === 0) {
-				dataList.value = data.page.records;
-				totalPage.value = data.page.total;
-			} else {
-				dataList.value = [];
-				totalPage.value = 0;
-			}
-		});
-	};
+// 定义响应式数据
+const dataList = ref([]);
+const dataListSelections = ref([]);
+const pageIndex = ref(1);
+const pageSize = ref(10);
+const totalPage = ref(0);
 
-	const addOrUpdateHandle = (id) => {
-		// 处理新增/修改操作
-		addOrUpdateVisible.value = true;
-		nextTick(() => {
-			addOrUpdateRef.value.init(id);
-		});
-	};
+const getDataList = () => {
+  LHG({
+    method: "get",
+    url: "/api/company/page",
+    params: {
+      pageIndex: pageIndex.value,
+      pageSize: pageSize.value,
+      companyName: searchForm.companyName,
+    }
+  }).then((res) => {
+    console.info("🚀 ~ file:ViewCompany.vue method: line:122 -----", res)
 
-	const showDetails = (id) => {
-		// 展示详情
-		addOrUpdateVisible.value = true;
-		nextTick(() => {
-			addOrUpdateRef.value.init(id, true);
-		});
-	};
+    if (res && res.code === 1) {
+      dataList.value = res.data.records;
+      totalPage.value = res.data.total;
+    } else {
+      ElMessage({
+        message: "操作失败",
+        type: "error",
+        duration: 1500,
+      });
+    }
+  });
+};
 
-	const deleteHandle = (id) => {
-		// 处理删除操作
-		let ids = id ? [id] : dataListSelections.value.map((item) => item.id);
-		ElMessageBox.confirm("确定对所选项进行[删除]操作?", "提示", {
-			confirmButtonText: "确定",
-			cancelButtonText: "取消",
-			type: "warning",
-		})
-			.then(() => {
-				LHG({
-					url: "/pesticide/crop/delete",
-					method: "post",
-					data: ids,
-				}).then(({ data }) => {
-					if (data && data.code === 0) {
-						ElMessage({
-							message: "操作成功",
-							type: "success",
-							duration: 1500,
-						});
-						getDataList();
-					}
-				});
-			})
-			.catch(() => {});
-	};
 
-	const selectionChangeHandle = (val) => {
-		// 处理表格选择事件
-		dataListSelections.value = val;
-	};
 
-	const sizeChangeHandle = (val) => {
-		// 处理分页大小变化
-		pageSize.value = val;
-		pageIndex.value = 1;
-		getDataList();
-	};
+const updateData = (id) => {
+  // 跳转到修改页面
+  ElMessage({
+    message: `跳转到修改页面，ID: ${id}`,
+    type: "success",
+    duration: 1500,
+  });
+  router.push(`/company/edit/${id}`);
+};
 
-	const currentChangeHandle = (val) => {
-		// 处理当前页变化
-		pageIndex.value = val;
-		getDataList();
-	};
+const showDetails = (id) => {
+  // 展示详情
+  ElMessage({
+    message: `跳转到详情页面，ID: ${id}`,
+    type: "success",
+    duration: 1500,
+  });
+  router.push(`/company/detail/${id}`);
+};
 
-	const addOrUpdateRef = ref(null);
+const deleteSelectionsHandle = () => {
+//   批量删除
+  ElMessageBox.confirm("确定对所选项进行[删除]操作?", "提示", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
+  })
+      .then(() => {
+        const ids = dataListSelections.value.map(item => item.companyId);
+        LHG({
+          method: 'delete',
+          url: '/api/company/delete',
+          data: {
+            companyIds: ids
+          }
+        }).then((res) => {
+          if (res && res.code === 1) {
+            ElMessage({
+              message: "操作成功",
+              type: "success",
+              duration: 1500,
+            });
+            getDataList();
+          }
+        });
+      })
+      .catch(() => {});
+};
 
-	onMounted(() => {
-		// 组件挂载时获取数据
-		getDataList();
-	});
+const deleteHandle = (companyName, companyId) => {
+  // 单个删除
+  ElMessageBox.confirm(`确定删除公司: ${companyName} ?`, "提示", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
+  })
+      .then(() => {
+        LHG({
+          method: 'delete',
+          url: `/api/company/delete`,
+          params: {
+            companyName: companyName,
+          },
+        }).then((res) => {
+          if (res && res.code === 1) {
+            ElMessage({
+              message: "操作成功",
+              type: "success",
+              duration: 1500,
+            });
+            getDataList();
+          }
+        });
+      })
+      .catch(() => {});
+};
+
+const selectionChangeHandle = (val) => {
+  // 处理表格选择事件
+  dataListSelections.value = val;
+};
+
+const sizeChangeHandle = (val) => {
+  // 处理分页大小变化
+  pageSize.value = val;
+  pageIndex.value = 1;
+  getDataList();
+};
+
+const currentChangeHandle = (val) => {
+  // 处理当前页变化
+  pageIndex.value = val;
+  getDataList();
+};
+
+onMounted(() => {
+  // 组件挂载时获取数据
+  getDataList();
+});
 </script>

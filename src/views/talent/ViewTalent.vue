@@ -99,11 +99,17 @@
 		name: "",
 	});
 
+	// 定义响应式数据dataList，用于存储列表数据
 	const dataList = ref([]);
+	// 定义响应式数据dataListSelections，用于存储列表中选中的数据
 	const dataListSelections = ref([]);
+	// 定义响应式数据pageIndex，用于存储当前页码
 	const pageIndex = ref(1);
+	// 定义响应式数据pageSize，用于存储每页显示条数
 	const pageSize = ref(10);
+	// 定义响应式数据totalPage，用于存储总页数
 	const totalPage = ref(0);
+	// 定义响应式数据addOrUpdateVisible，用于控制新增或编辑模态框的显示与隐藏
 	const addOrUpdateVisible = ref(false);
 
 	const getDataList = () => {

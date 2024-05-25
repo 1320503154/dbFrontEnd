@@ -1,280 +1,210 @@
 <template>
-	<div class="login">
-		<div class="shell">
-			<div
-				class="container a-container"
-				:class="{ 'is-txl': showLoginForm, 'is-z': !transStyle }">
-				<form
-					class="form"
-					id="a-form"
-					@submit.prevent>
-					<h2 class="form_title title">创建账号</h2>
-					<!-- <span class="form_span">选择注册方式或电子邮箱注册</span> -->
-					<!-- <input type="text" class="form_input" placeholder="Name"> -->
-					<!-- <input type="text" class="form_input" placeholder="Email"> -->
-					<!-- <input type="password" class="form_input" placeholder="Password"> -->
-					<v-sheet
-						class="mx-auto"
-						width="350">
-						<v-form
-							fast-fail
-							@submit.prevent
-							style="background-color: #ecf0f3">
-							<v-text-field
-								v-model="signupUsername"
-								:rules="firstNameRules"
-								label="用户名"
-								style="border-radius: 8px"></v-text-field>
+  <div class="login">
+    <div class="shell">
+      <div class="container a-container" :class="{ 'is-txl': showLoginForm, 'is-z': !transStyle }">
+        <form class="form" id="a-form">
+          <h2 class="form_title title">创建账号</h2>
+          <v-sheet class="mx-auto" width="350">
+            <v-form fast-fail style="background-color: #ecf0f3">
+              <v-text-field
+                  v-model="signupUsername"
+                  :rules="firstNameRules"
+                  label="用户名"
+                  style="border-radius: 8px"
+              ></v-text-field>
+              <v-text-field
+                  v-model="signupPassword"
+                  :rules="lastNameRules"
+                  label="密码"
+                  type="password"
+              ></v-text-field>
+              <div class="annui">
+                <el-button class="mt-2 form_button button" @click="signup" :plain="true">注册</el-button>
+              </div>
+            </v-form>
+          </v-sheet>
+        </form>
+      </div>
 
-							<v-text-field
-								v-model="signupPassword"
-								:rules="lastNameRules"
-								label="密码"
-								type="password"></v-text-field>
+      <div class="container b-container" :class="{ 'is-txl': showLoginForm, 'is-z': transStyle }">
+        <form class="form" id="b-form" @submit.prevent="login">
+          <h2 class="form_title title">登入账号</h2>
+          <input type="text" class="form_input" placeholder="Email" v-model="loginUsername" />
+          <input type="password" class="form_input" placeholder="Password" v-model="loginPassword" />
+          <a class="form_link">忘记密码？</a>
+          <button class="form_button button submit">登录</button>
+        </form>
+      </div>
 
-							<!-- <v-btn class="mt-2 form_button button " type="submit" block @click="signup">注册</v-btn> -->
-							<div class="annui">
-								<el-button
-									class="mt-2 form_button button"
-									type="submit"
-									:plain="true"
-									@click="signup"
-									>注册</el-button
-								>
-							</div>
-						</v-form>
-					</v-sheet>
-					<!-- <button class="form_button button submit" @click="signup">注册</button> -->
-				</form>
-			</div>
+      <div class="switch" id="switch-cnt" :class="{ 'is-gx': transStyle, 'is-txr': showLoginForm }">
+        <div class="switch_circle" :class="{ 'is-txr': showLoginForm }"></div>
+        <div class="switch_circle switch_circle-t" :class="{ 'is-txr': showLoginForm }"></div>
+        <div class="switch_container" id="switch-c1" :class="{ 'is-hidden': showLoginForm }">
+          <h2 class="switch_title title" style="letter-spacing: 0">欢迎回来 ！</h2>
+          <p class="switch_description description">
+            已经有账号了嘛，去登入账号来进入奇妙世界吧！！！
+          </p>
+          <button class="switch_button button switch-btn" @click="changeStyle">登录</button>
+        </div>
 
-			<div
-				class="container b-container"
-				:class="{ 'is-txl': showLoginForm, 'is-z': transStyle }">
-				<form
-					class="form"
-					id="b-form"
-					@submit.prevent>
-					<h2 class="form_title title">登入账号</h2>
-					<!-- <span class="form_span">选择登录方式或电子邮箱登录</span> -->
-					<input
-						type="text"
-						class="form_input"
-						placeholder="Email"
-						v-model="loginUsername" />
-					<input
-						type="password"
-						class="form_input"
-						placeholder="Password"
-						v-model="loginPassword" />
-					<a class="form_link">忘记密码？</a>
-					<button
-						class="form_button button submit"
-						@click="login">
-						登录
-					</button>
-				</form>
-			</div>
-
-			<div
-				class="switch"
-				id="switch-cnt"
-				:class="{ 'is-gx': transStyle, 'is-txr': showLoginForm }">
-				<div
-					class="switch_circle"
-					:class="{ 'is-txr': showLoginForm }"></div>
-				<div
-					class="switch_circle switch_circle-t"
-					:class="{ 'is-txr': showLoginForm }"></div>
-				<div
-					class="switch_container"
-					id="switch-c1"
-					:class="{ 'is-hidden': showLoginForm }">
-					<h2
-						class="switch_title title"
-						style="letter-spacing: 0">
-						欢迎回来 ！
-					</h2>
-					<p class="switch_description description">
-						已经有账号了嘛，去登入账号来进入奇妙世界吧！！！
-					</p>
-					<button
-						class="switch_button button switch-btn"
-						@click="changeStyle">
-						登录
-					</button>
-				</div>
-
-				<div
-					class="switch_container"
-					id="switch-c2"
-					:class="{ 'is-hidden': !showLoginForm }">
-					<h2
-						class="switch_title title"
-						style="letter-spacing: 0">
-						你好，朋友 ！
-					</h2>
-					<p class="switch_description description">
-						去注册一个账号，让我们踏入奇妙的旅途！
-					</p>
-					<button
-						class="switch_button button switch-btn"
-						@click="changeStyle">
-						注册
-					</button>
-				</div>
-			</div>
-		</div>
-	</div>
+        <div class="switch_container" id="switch-c2" :class="{ 'is-hidden': !showLoginForm }">
+          <h2 class="switch_title title" style="letter-spacing: 0">你好，朋友 ！</h2>
+          <p class="switch_description description">
+            去注册一个账号，让我们踏入奇妙的旅途！
+          </p>
+          <button class="switch_button button switch-btn" @click="changeStyle">注册</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
-	import { onMounted, reactive, ref } from "vue";
-	import { useRouter } from "vue-router";
-	import { ElMessage } from "element-plus";
+import {computed, onMounted, ref} from 'vue';
+import {useRoute, useRouter} from 'vue-router';
+import { ElMessage } from 'element-plus';
+import LHG from "@/utils/axios.js";
+import {ArrowRight} from "@element-plus/icons-vue";
+import {useUserStore} from "@/stores/user.js";
 
-	onMounted(() => {
-		signupUsername.value = "";
-		signupPassword.value = "";
-		loginUsername.value = "";
-		loginPassword.value = "";
-	});
+const userStore = useUserStore();
 
-	const firstName = ref("");
-	const firstNameRules = [
-		(value) => {
-			if (value?.length > 3) return true;
+const breadcrumbItems = ref([]);
+const route = useRoute();
+onMounted(() => {
+  signupUsername.value = '';
+  signupPassword.value = '';
+  loginUsername.value = '';
+  loginPassword.value = '';
 
-			return "用户名必须至少包含3个字符。";
-		},
-	];
+  breadcrumbItems.value = computed(() => {
+    const items = [];
+    // Assume that your route.meta contains breadcrumb information
+    route.meta.breadcrumb.forEach((breadcrumb) => {
+      const { name, path } = breadcrumb;
+      items.push({ to: { path }, text: name });
+    });
+    return items;
 
-	const lastName = ref("123");
-	const lastNameRules = [
-		(value) => {
-			// if (/[^0-9]/.test(value)) return true;
-			if (value?.length >= 5) return true;
+  });
+});
 
-			return "密码必须至少包含5个字符。";
-		},
-	];
+const firstName = ref('');
+const firstNameRules = [
+  (value) => {
+    if (value?.length > 3) return true;
+    return '用户名必须至少包含3个字符。';
+  },
+];
 
-	// 跳转路由
-	const router = useRouter();
+const lastName = ref('123');
+const lastNameRules = [
+  (value) => {
+    if (value?.length >= 5) return true;
+    return '密码必须至少包含5个字符。';
+  },
+];
 
-	// 样式切换
-	let showLoginForm = ref(false);
-	let transStyle = ref(false);
-	const changeStyle = () => {
-		showLoginForm.value = !showLoginForm.value;
-		transStyle.value = !transStyle.value;
-		// setTimeout(() => {
-		//     transStyle.value = false;
-		// }, 1500)
-	};
+const router = useRouter();
 
-	// 注册所需的用户名和密码
-	const signupUsername = ref("");
-	const signupPassword = ref("");
+let showLoginForm = ref(false);
+let transStyle = ref(false);
+const changeStyle = () => {
+  showLoginForm.value = !showLoginForm.value;
+  transStyle.value = !transStyle.value;
+};
 
-	// 登录所需的用户名和密码
-	const loginUsername = ref("");
-	const loginPassword = ref("");
+const signupUsername = ref('');
+const signupPassword = ref('');
+const loginUsername = ref('');
+const loginPassword = ref('');
 
-	// 注册
-	const signup = async () => {
-		console.log("Signing up...");
-		const eUsername = signupUsername.value;
-		const ePassword = signupPassword.value;
+const signup = async () => {
+  console.log('Signing up...');
+  const eUsername = signupUsername.value;
+  const ePassword = signupPassword.value;
 
-		try {
-			const response = await fetch("/api/signup", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ userName: eUsername, password: ePassword }),
-			});
 
-			if (response.ok) {
-				const data = await response.json();
-				console.log(data);
-				if (data.msg === "success") {
-					console.log("注册成功");
-					// 弹出消息框
-					ElMessage({
-						message: "恭喜你，注册成功！",
-						type: "success",
-					});
-					// 可以根据后端返回的数据进行相应的处理
-				} else if (data.msg === "用户已存在") {
-					console.log("注册失败：用户名已存在或其他错误");
-					ElMessage({
-						message: "注册失败，该用户名已存在",
-						type: "warning",
-					});
-				}
-			} else {
-				console.error("注册请求失败");
-			}
-		} catch (error) {
-			console.error("注册请求出错：", error);
-		}
+  const registerTime = new Date().toISOString();
+  console.info("🚀 ~ file:LoginView.vue method:signup line:127 -----", eUsername)
+  console.info("🚀 ~ file:LoginView.vue method:signup line:128 -----", ePassword)
+  console.info("🚀 ~ file:LoginView.vue method:signup line:129 -----", registerTime)
+  try {
+    const response = await LHG.post("/api/user/insert", {
+      username: eUsername,
+      password: ePassword,
+      registerTime: registerTime,
+      userType: '0',//默认为求职者
+    })
+    console.info("🚀 ~ file:LoginView.vue method:signup line:125 -----", response)
 
-		// 清空输入框
-		signupUsername.value = "";
-		signupPassword.value = "";
-	};
+    if (response.code == 1) {
 
-	// 登录
-	const login = async () => {
-		console.log("Logging in...");
-		// 获取用户输入的用户名和密码
-		const eUsername = loginUsername.value;
-		const ePassword = loginPassword.value;
-		// if (eUsername === 'manager' && ePassword == '123456')
-		//   router.push('/map');
-		// else if (eUsername == 'user' && ePassword === '1234')
-		//   router.push('/');
-		try {
-			const response = await fetch("/api/login", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ userName: eUsername, password: ePassword }),
-			});
+      ElMessage({
+        message: response,
+        type: 'success',
+      });
+      changeStyle();
+    } else {
+      ElMessage({
+        message: data.message,
+        type: 'warning',
+      });
+    }
+  }
+  catch (error) {
+    console.error('注册请求出错：', error);
+    ElMessage({
+      message: '注册请求出错：' + error.message,
+      type: 'error',
+    });
+  }
 
-			if (response.ok) {
-				const data = await response.json();
-				console.log(data); // 根据后端返回的数据进行处理
-				// 存储token
-				const token = data.data.token;
-				const status = data.data.status;
-				console.log(data.msg);
-				console.log(token);
-				localStorage.setItem("token", token);
-				ElMessage({
-					message: "登录成功！",
-					type: "success",
-				});
-				if (status === "user") router.push("/");
-				else router.push("/map");
-			} else if (data.msg === "该用户未注册") {
-				console.error("登录请求失败");
-				ElMessage.error("该用户未注册");
-			}
-		} catch (error) {
-			console.error("登录请求出错：", error);
-			ElMessage.error("登录请求出错：");
-			console.log(111);
-		}
+  signupUsername.value = '';
+  signupPassword.value = '';
+};
 
-		// 清空输入框
-		loginUsername.value = "";
-		loginPassword.value = "";
-	};
+const login = async () => {
+  console.log('Logging in...');
+  const eUsername = loginUsername.value;
+  const ePassword = loginPassword.value;
+
+  try {
+    const response = await LHG(`/api/user/findByUsername/${eUsername}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    console.info("🚀 ~ file:LoginView.vue method:login line:169 -----", response)
+
+    if (response.code == 1) {
+      const data = response
+      if (data.code == 1) {
+        const token = 'fake-jwt-token'; // Replace with actual token from response if applicable
+        userStore.setUserInfo(data.data);
+        ElMessage({
+          message: '登录成功！',
+          type: 'success',
+        });
+        if (data.data.userType === '1') router.push('/');
+        else router.push('/talent/view');
+      } else {
+        ElMessage.error('用户名或密码错误');
+      }
+    } else {
+      ElMessage.error('登录请求失败');
+    }
+  } catch (error) {
+    console.error('登录请求出错：', error);
+    ElMessage.error('登录请求出错：' + error.message);
+  }
+
+  loginUsername.value = '';
+  loginPassword.value = '';
+};
 </script>
+
 
 <style scoped>
 	* {

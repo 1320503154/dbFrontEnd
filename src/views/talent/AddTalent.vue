@@ -149,9 +149,13 @@
 					url: "/api/talent/add",
 					method: "post",
 					data: ruleForm,
-				}).then(({ data }) => {
-					console.log("In AddTalent.vue data::: ", data);
-				});
+				})
+					.then(({ data }) => {
+						console.log("In AddTalent.vue data::: ", data);
+					})
+					.catch((error) => {
+						console.log("In AddTalent.vue error::: ", error);
+					});
 			} else {
 				console.log("error submit!", fields);
 			}

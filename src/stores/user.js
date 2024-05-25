@@ -1,12 +1,15 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 
-export const useUserStore = defineStore('counter', () => {
+export const useUserStore = defineStore('user', () => {
   const userInfo = ref({});
-
-  function use() {
-    count.value++
+  function setUserInfo(info) {
+    userInfo.value = info;
   }
-
-  return { count, doubleCount, increment }
-})
+  function getUserInfo() {
+    return userInfo.value;
+  }
+    return { userInfo, setUserInfo,getUserInfo }
+},{
+  persist:true,
+});
