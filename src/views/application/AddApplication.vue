@@ -52,9 +52,9 @@
 			<el-button
 				type="primary"
 				@click="submitForm"
-				>提交</el-button
+				>提交申请</el-button
 			>
-			<el-button @click="resetForm">重置</el-button>
+			<el-button @click="resetForm">重新提交</el-button>
 		</el-form-item>
 	</el-form>
 </template>

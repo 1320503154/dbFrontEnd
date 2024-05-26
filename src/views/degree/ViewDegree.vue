@@ -18,12 +18,12 @@
 		</el-form>
 
 		<!-- 新建按钮 -->
-		<el-button
+		<!-- <el-button
 			type="primary"
 			@click="addOrUpdateHandle"
 			size="small"
 			>新建</el-button
-		>
+		> -->
 		<!-- 批量删除按钮 -->
 		<el-button
 			type="danger"

@@ -18,7 +18,7 @@
 		</el-form>
 
 		<!-- 新建按钮 -->
-		<add-position @refresh-data-list="getDataList()"></add-position>
+		<!-- <add-position @refresh-data-list="getDataList()"></add-position> -->
 		<!-- 批量删除按钮 -->
 		<el-button
 			type="danger"

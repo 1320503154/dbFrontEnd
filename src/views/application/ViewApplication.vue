@@ -18,7 +18,14 @@
 				>
 			</el-form-item>
 		</el-form>
-		<addApplicationDrow></addApplicationDrow>
+		<el-button
+			type="danger"
+			@click="deleteHandle"
+			:disabled="dataListSelections.length <= 0"
+			>批量删除</el-button
+		>
+		
+		<!-- <addApplicationDrow></addApplicationDrow> -->
 		<!-- 表格 -->
 		<el-table
 			:data="dataList"
@@ -69,6 +76,34 @@
 	import { ElMessage } from "element-plus";
 	import LHG from "@/utils/axios";
 
+	// 删除
+	const deleteHandle = (id) => {
+		// 处理删除操作
+		let ids = id ? [id] : dataListSelections.value.map((item) => item.id);
+		ElMessageBox.confirm("确定对所选项进行[删除]操作?", "提示", {
+			confirmButtonText: "确定",
+			cancelButtonText: "取消",
+			type: "warning",
+		})
+			.then(() => {
+				LHG({
+					url: "/pesticide/crop/delete",
+					method: "post",
+					data: ids,
+				}).then(({ data }) => {
+					if (data && data.code === 0) {
+						ElMessage({
+							message: "操作成功",
+							type: "success",
+							duration: 1500,
+						});
+						getDataList();
+					}
+				});
+			})
+			.catch(() => {});
+	};
+	
 	const searchForm = reactive({
 		idNumber: "",
 	});

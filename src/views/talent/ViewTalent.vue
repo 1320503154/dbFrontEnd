@@ -18,12 +18,12 @@
 		</el-form>
 
 		<!-- 新建按钮 -->
-		<el-button
+		<!-- <el-button
 			type="primary"
 			@click="addOrUpdateHandle"
 			size="small"
 			>新建</el-button
-		>
+		> -->
 		<!-- 批量删除按钮 -->
 		<el-button
 			type="danger"
@@ -133,13 +133,13 @@
 		});
 	};
 
-	const addOrUpdateHandle = (id) => {
-		// 处理新增/修改操作
-		addOrUpdateVisible.value = true;
-		nextTick(() => {
-			addOrUpdateRef.value.init(id);
-		});
-	};
+	// const addOrUpdateHandle = (id) => {
+	// 	// 处理新增/修改操作
+	// 	addOrUpdateVisible.value = true;
+	// 	nextTick(() => {
+	// 		addOrUpdateRef.value.init(id);
+	// 	});
+	// };
 
 	const showDetails = (id) => {
 		// 展示详情
