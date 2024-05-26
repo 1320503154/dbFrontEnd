@@ -1,4 +1,4 @@
-<script setup>
+<!-- <script setup>
 	import { computed, onBeforeMount, ref, watch } from "vue";
 	import { useRoute } from "vue-router";
 	import navBarLeft from "@/components/navBarLeft.vue";
@@ -88,4 +88,15 @@
 		scroll-behavior: smooth;
 		overflow-x: hidden;
 	}
-</style>
+</style> -->
+<template>
+	<v-app>
+	  <v-main>
+		<router-view />
+	  </v-main>
+	</v-app>
+  </template>
+  
+  <script setup>
+	//
+  </script>

@@ -16,6 +16,7 @@ import ViewDegree from "@/views/degree/ViewDegree.vue";
 import HomeView from "@/views/HomeView.vue";
 import AboutView from "@/views/AboutView.vue";
 import LoginView from "@/views/LoginView.vue";
+import Management from "@/views/Management.vue";
 import { useUserStore } from "@/stores/user.js";
 
 const routes = [
