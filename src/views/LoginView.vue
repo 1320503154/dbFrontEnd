@@ -71,7 +71,7 @@
 					<input
 						type="text"
 						class="form_input"
-						placeholder="Email"
+						placeholder="用户名"
 						v-model="loginUsername" />
 					<input
 						type="password"
