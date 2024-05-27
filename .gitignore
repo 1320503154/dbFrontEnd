@@ -28,3 +28,5 @@ coverage
 *.sw?
 
 *.tsbuildinfo
+deployToNginx.bat
+启动后端spring.bat

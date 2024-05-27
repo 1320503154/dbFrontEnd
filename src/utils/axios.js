@@ -20,7 +20,6 @@ LHG.interceptors.request.use(
 		const routeStore = useRouteStore(); // 获取 route store
 
 		const route = routeStore.currentRoute;
-		console.log("In axios.js route::: ", route);
 
 		if (route.path == "/login" || route.path == "/register") {
 			return config;

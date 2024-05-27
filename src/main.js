@@ -1,27 +1,23 @@
 import { createApp } from "vue";
 import { createPinia } from "pinia";
-import { useRouteStore } from "@/stores/route";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
-
-const pinia = createPinia();
-pinia.use(piniaPluginPersistedstate);
-
 import ElementPlus from "element-plus";
 import "element-plus/dist/index.css";
-
-// Vuetify
 import "vuetify/styles";
 import { createVuetify } from "vuetify";
 import * as components from "vuetify/components";
 import * as directives from "vuetify/directives";
+import App from "./App.vue";
+import router from "./router";
+import { useRouteStore } from "@/stores/route";
+
+const pinia = createPinia();
+pinia.use(piniaPluginPersistedstate);
 
 const vuetify = createVuetify({
 	components,
 	directives,
 });
-
-import App from "./App.vue";
-import router from "./router";
 
 const app = createApp(App);
 

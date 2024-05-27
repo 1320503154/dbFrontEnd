@@ -3,6 +3,7 @@
 		<!-- 搜索表单 -->
 		<el-form
 			:inline="true"
+			@submit.prevent="getDataList"
 			:model="searchForm">
 			<el-form-item>
 				<!-- 输入框 -->
@@ -222,7 +223,7 @@
 		getDataList();
 		dataList.value.forEach((item) => {
 			for (let i = 0; i < companyInfo.value.length; i++) {
-				if (item.companyId === companyInfo.value[i].companyId) {
+				if (item.companyId == companyInfo.value[i].companyId) {
 					item.companyName = companyInfo.value[i].companyName;
 				}
 			}

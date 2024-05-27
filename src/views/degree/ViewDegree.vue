@@ -3,6 +3,7 @@
 		<!-- 搜索表单 -->
 		<el-form
 			:inline="true"
+			@submit.prevent="getDataList"
 			:model="searchForm">
 			<el-form-item>
 				<!-- 输入框 -->

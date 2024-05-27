@@ -2,6 +2,7 @@
 	<div>
 		<!-- 搜索表单 -->
 		<el-form
+			@submit.prevent="getDataList"
 			:inline="true"
 			:model="searchForm">
 			<el-form-item>

@@ -39,7 +39,6 @@
 			updateBreadcrumbs();
 		}
 	);
-	console.log(userInfo.value);
 </script>
 
 <template>
@@ -70,6 +69,12 @@
 							}}</span
 						>
 					</el-affix>
+					<el-button
+						type="primary"
+						@click="userStore.logout"
+						style="margin-left: 20px"
+						>退出登录</el-button
+					>
 				</el-header>
 				<el-main>
 					<RouterView></RouterView>
