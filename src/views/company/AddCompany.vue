@@ -113,8 +113,8 @@
 			{ required: true, message: "请输入联系电话", trigger: "blur" },
 		],
 		email: [{ required: true, message: "请输入邮箱", trigger: "blur" }],
-		address: [{ required: true, message: "请输入地址", trigger: "blur" }],
-		website: [{ required: true, message: "请输入网站", trigger: "blur" }],
+		address: [{ message: "请输入地址", trigger: "blur" }],
+		website: [{ message: "请输入网站", trigger: "blur" }],
 	};
 
 	const formRef = ref(null);
