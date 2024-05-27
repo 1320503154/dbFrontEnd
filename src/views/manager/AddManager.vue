@@ -63,19 +63,20 @@
 	}
 </style>
 <script setup>
-	import { reactive, ref } from "vue";
+	import { onMounted, reactive, ref } from "vue";
 	import { ElMessage } from "element-plus";
 	import LHG from "@/utils/axios";
+	import { getManagerList } from "@/api/manager";
 	const formSize = ref("default");
 	const ruleFormRef = ref();
-	const UserId = ref(ruleFormRef.idNumber / 3 % 10000);
+	const UserId = ref((ruleFormRef.idNumber / 3) % 10000);
 	const ruleForm = reactive({
 		userId: UserId.value,
 		idNumber: "1234567",
 		name: "张三",
 		email: "1320503154@qq.com",
 		phoneNumber: "13772763778",
-		companyId: 1
+		companyId: 1,
 	});
 
 	const rules = reactive({
@@ -110,7 +111,7 @@
 		companyId: [
 			{
 				required: true,
-				message: "请输入有效的公司id", 
+				message: "请输入有效的公司id",
 				trigger: "blur",
 			},
 		],

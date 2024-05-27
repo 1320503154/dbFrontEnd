@@ -46,6 +46,9 @@
 				prop="companyId"
 				label="公司ID"></el-table-column>
 			<el-table-column
+				prop="companyName"
+				label="公司姓名"></el-table-column>
+			<el-table-column
 				label="操作"
 				fixed="right"
 				width="150">
@@ -80,11 +83,13 @@
 </template>
 
 <script setup>
-	import { ref, reactive, onMounted } from "vue";
+	import { ref, reactive, onMounted, onBeforeMount } from "vue";
 	import axios from "axios";
 	import LHG from "@/utils/axios.js";
 	import { ElMessage, ElMessageBox } from "element-plus";
-
+	import { useUserStore } from "@/stores/user";
+	const userStore = useUserStore();
+	const companyInfo = ref([]);
 	// 搜索表单
 	const searchForm = reactive({
 		name: "",
@@ -115,6 +120,13 @@
 					duration: 1500,
 				});
 				dataList.value = res.data.records;
+				dataList.value.forEach((item) => {
+					for (let i = 0; i < companyInfo.value.length; i++) {
+						if (item.companyId === companyInfo.value[i].companyId) {
+							item.companyName = companyInfo.value[i].companyName;
+						}
+					}
+				});
 				totalPage.value = res.data.total;
 			} else {
 				ElMessage({
@@ -124,6 +136,7 @@
 				});
 			}
 		});
+		console.log(dataList.value);
 	};
 
 	// 显示详细信息
@@ -202,7 +215,17 @@
 		getDataList();
 	};
 
-	onMounted(() => {
+	onBeforeMount(() => {
+		companyInfo.value = userStore.getCompanyInfo();
+		console.log("In ViewManager.vue companyInfo.value::: ", companyInfo.value);
+
 		getDataList();
+		dataList.value.forEach((item) => {
+			for (let i = 0; i < companyInfo.value.length; i++) {
+				if (item.companyId === companyInfo.value[i].companyId) {
+					item.companyName = companyInfo.value[i].companyName;
+				}
+			}
+		});
 	});
 </script>

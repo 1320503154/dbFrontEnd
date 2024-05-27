@@ -5,6 +5,13 @@ export const useUserStore = defineStore(
 	"user",
 	() => {
 		const userInfo = ref({});
+		const companyInfo = ref({});
+		function setCompanyInfo(info) {
+			companyInfo.value = info;
+		}
+		function getCompanyInfo() {
+			return companyInfo.value;
+		}
 		function setUserInfo(info) {
 			userInfo.value = info;
 		}
@@ -14,7 +21,13 @@ export const useUserStore = defineStore(
 		function getToken() {
 			return userInfo.value.token;
 		}
-		return { userInfo, setUserInfo, getUserInfo, getToken };
+		return {
+			setUserInfo,
+			getUserInfo,
+			getToken,
+			setCompanyInfo,
+			getCompanyInfo,
+		};
 	},
 	{
 		persist: true,

@@ -100,8 +100,9 @@
 	import LHG from "@/utils/axios.js";
 	import { ElMessage, ElMessageBox } from "element-plus";
 	import AddCompany from "@/views/company/AddCompany.vue";
+	import { useUserStore } from "@/stores/user";
 	const router = useRouter();
-
+	const userStore = useUserStore();
 	const searchForm = reactive({
 		companyName: "",
 	});
@@ -130,7 +131,7 @@
 				companyName: searchForm.companyName,
 			},
 		}).then((res) => {
-			console.info("🚀 ~ file:ViewCompany.vue method: line:122 -----", res);
+			console.log(res);
 
 			if (res && res.code === 1) {
 				ElMessage({
@@ -139,6 +140,7 @@
 					duration: 1500,
 				});
 				dataList.value = res.data.records;
+				userStore.setCompanyInfo(res.data.records);
 				totalPage.value = res.data.total;
 			} else {
 				ElMessage({

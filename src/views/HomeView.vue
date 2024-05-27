@@ -39,6 +39,7 @@
 			updateBreadcrumbs();
 		}
 	);
+	console.log(userInfo.value);
 </script>
 
 <template>
