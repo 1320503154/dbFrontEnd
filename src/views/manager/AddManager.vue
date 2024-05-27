@@ -23,6 +23,14 @@
 		</el-form-item>
 
 		<el-form-item
+			label="手机号码"
+			prop="phoneNumber">
+			<el-input
+				placeholder="请输入有效的手机号码"
+				v-model="ruleForm.phoneNumber" />
+		</el-form-item>
+
+		<el-form-item
 			label="有效邮箱"
 			prop="email">
 			<el-input
@@ -31,11 +39,11 @@
 		</el-form-item>
 
 		<el-form-item
-			label="手机号码"
-			prop="phoneNumber">
+			label="公司ID"
+			prop="companyId">
 			<el-input
-				placeholder="请输入有效的手机号码"
-				v-model="ruleForm.phoneNumber" />
+				placeholder="输入公司对应ID"
+				v-model="ruleForm.companyId" />
 		</el-form-item>
 
 		<el-form-item>
@@ -56,17 +64,18 @@
 </style>
 <script setup>
 	import { reactive, ref } from "vue";
+	import { ElMessage } from "element-plus";
 	import LHG from "@/utils/axios";
 	const formSize = ref("default");
 	const ruleFormRef = ref();
+	const UserId = ref(ruleFormRef.idNumber / 3 % 10000);
 	const ruleForm = reactive({
-		userId: 1,
-		idNumber: "130000000001234567",
+		userId: UserId.value,
+		idNumber: "1234567",
 		name: "张三",
-		gender: "男",
-		birthDate: "",
 		email: "1320503154@qq.com",
 		phoneNumber: "13772763778",
+		companyId: 1
 	});
 
 	const rules = reactive({
@@ -98,6 +107,13 @@
 				trigger: "blur",
 			},
 		],
+		companyId: [
+			{
+				required: true,
+				message: "请输入有效的公司id", 
+				trigger: "blur",
+			},
+		],
 	});
 
 	const submitForm = async (formEl) => {
@@ -106,15 +122,20 @@
 			if (valid) {
 				console.log("submit!", ruleForm);
 				LHG({
-					url: "/api/talent/add",
+					url: "/api/responsibleperson/add",
 					method: "post",
 					data: ruleForm,
 				})
 					.then(({ data }) => {
-						console.log("In AddTalent.vue data::: ", data);
+						console.log("In AddResponsibleperson.vue data::: ", data);
+						// 弹出消息框
+						ElMessage({
+							message: "添加成功！",
+							type: "success",
+						});
 					})
 					.catch((error) => {
-						console.log("In AddTalent.vue error::: ", error);
+						console.log("In AddResponsibleperson.vue error::: ", error);
 					});
 			} else {
 				console.log("error submit!", fields);

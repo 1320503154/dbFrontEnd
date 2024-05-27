@@ -33,13 +33,13 @@
 									v-model="radio1"
 									class="ml-4">
 									<el-radio
-										value="1"
+										value="0"
 										size="large"
 										style="margin-right: 20vh"
 										>求职者</el-radio
 									>
 									<el-radio
-										value="2"
+										value="1"
 										size="large"
 										>公司 HR</el-radio
 									>
@@ -157,9 +157,9 @@
 	const firstName = ref("");
 	const firstNameRules = [
 		(value) => {
-			if (value?.length > 3) return true;
+			if (value?.length >= 2) return true;
 
-			return "用户名必须至少包含3个字符。";
+			return "用户名必须至少包含2个字符。";
 		},
 	];
 
@@ -200,10 +200,12 @@
 		console.log("Signing up...");
 		const eUsername = signupUsername.value;
 		const ePassword = signupPassword.value;
+		const eUserType = radio1.value;
 		try {
 			const response = await LHG.post("/api/user/register", {
 				username: eUsername,
 				password: ePassword,
+				userType: eUserType
 				// status: radio1.value,
 			});
 			console.log("In LoginView.vue response::: ", response);

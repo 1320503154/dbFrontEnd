@@ -30,10 +30,10 @@
 				placeholder="请选择你的性别">
 				<el-option
 					label="女"
-					value="女" />
+					value="F" />
 				<el-option
 					label="男"
-					value="男" />
+					value="M" />
 			</el-select>
 		</el-form-item>
 
@@ -81,14 +81,16 @@
 </style>
 <script setup>
 	import { reactive, ref } from "vue";
+	import { ElMessage } from "element-plus";
 	import LHG from "@/utils/axios";
 	const formSize = ref("default");
 	const ruleFormRef = ref();
+	const UserId = ref(ruleFormRef.idNumber / 7 % 10000);
 	const ruleForm = reactive({
-		userId: 1,
+		userId: UserId.value,
 		idNumber: "130000000001234567",
 		name: "张三",
-		gender: "男",
+		gender: "M",
 		birthDate: "",
 		email: "1320503154@qq.com",
 		phoneNumber: "13772763778",
@@ -152,6 +154,11 @@
 				})
 					.then(({ data }) => {
 						console.log("In AddTalent.vue data::: ", data);
+						// 弹出消息框
+						ElMessage({
+							message: "添加成功！",
+							type: "success",
+						});
 					})
 					.catch((error) => {
 						console.log("In AddTalent.vue error::: ", error);
