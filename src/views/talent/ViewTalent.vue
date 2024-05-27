@@ -5,10 +5,24 @@
 			:inline="true"
 			:model="searchForm">
 			<el-form-item>
-				<!-- 输入框 -->
+				<!-- 名字输入框 -->
 				<el-input
 					v-model="searchForm.name"
-					placeholder="请输入人才名"
+					placeholder="请输入姓名"
+					clearable></el-input>
+			</el-form-item>
+			<el-form-item>
+				<!-- 身份证号输入框 -->
+				<el-input
+					v-model="searchForm.idNumber"
+					placeholder="请输入身份证号"
+					clearable></el-input>
+			</el-form-item>
+			<el-form-item>
+				<!-- 手机号输入框 -->
+				<el-input
+					v-model="searchForm.phoneNumber"
+					placeholder="请输入手机号"
 					clearable></el-input>
 			</el-form-item>
 			<el-form-item>
@@ -18,16 +32,16 @@
 		</el-form>
 
 		<!-- 新建按钮 -->
-		<!-- <el-button
+		<el-button
 			type="primary"
-			@click="addOrUpdateHandle"
-			size="small"
+			@click="addTalent"
 			>新建</el-button
-		> -->
+		>
+
 		<!-- 批量删除按钮 -->
 		<el-button
 			type="danger"
-			@click="deleteHandle"
+			@click="deleteSelectionsHandle"
 			:disabled="dataListSelections.length <= 0"
 			>批量删除</el-button
 		>
@@ -41,11 +55,27 @@
 				type="selection"
 				width="50"></el-table-column>
 			<el-table-column
-				prop="cropName"
-				label="作物名"></el-table-column>
+				prop="userId"
+				label="ID"
+				width="100"></el-table-column>
 			<el-table-column
-				prop="orderNum"
-				label="排序号"></el-table-column>
+				prop="name"
+				label="姓名"></el-table-column>
+			<el-table-column
+				prop="idNumber"
+				label="身份证号"></el-table-column>
+			<el-table-column
+				prop="phoneNumber"
+				label="手机号"></el-table-column>
+			<el-table-column
+				prop="gender"
+				label="性别"></el-table-column
+			><el-table-column
+				prop="birthDate"
+				label="生日"></el-table-column
+			><el-table-column
+				prop="email"
+				label="电子邮箱"></el-table-column>
 			<el-table-column
 				label="操作"
 				fixed="right"
@@ -53,21 +83,21 @@
 				<template #default="scope">
 					<!-- 操作按钮 -->
 					<el-button
-						type="text"
+						link
 						size="small"
-						@click="addOrUpdateHandle(scope.row.id)"
+						@click="updateData(scope.row.userId)"
 						>修改</el-button
 					>
 					<el-button
-						type="text"
+						link
 						size="small"
-						@click="showDetails(scope.row.id)"
+						@click="showDetails(scope.row.userId)"
 						>查看</el-button
 					>
 					<el-button
-						type="text"
+						link
 						size="small"
-						@click="deleteHandle(scope.row.id)"
+						@click="deleteHandle(scope.row.name, scope.row.userId)"
 						>删除</el-button
 					>
 				</template>
@@ -83,87 +113,133 @@
 			:page-size="pageSize"
 			:total="totalPage"
 			layout="total, sizes, prev, pager, next, jumper"></el-pagination>
-
-		<!-- 新增/修改组件 -->
-		<AddOrUpdate
-			v-if="addOrUpdateVisible"
-			ref="addOrUpdate"
-			@refreshDataList="getDataList"></AddOrUpdate>
 	</div>
 </template>
 
 <script setup>
-	import { ref, reactive, onMounted, nextTick } from "vue";
-	import LHG from "@/utils/axios";
+	import { ref, reactive, onMounted } from "vue";
+	import { useRouter } from "vue-router";
+	import LHG from "@/utils/axios.js";
+	import { ElMessage, ElMessageBox } from "element-plus";
+
+	const router = useRouter();
+
 	const searchForm = reactive({
 		name: "",
+		idNumber: "",
+		phoneNumber: "",
 	});
 
-	// 定义响应式数据dataList，用于存储列表数据
+	// 定义响应式数据
 	const dataList = ref([]);
-	// 定义响应式数据dataListSelections，用于存储列表中选中的数据
 	const dataListSelections = ref([]);
-	// 定义响应式数据pageIndex，用于存储当前页码
 	const pageIndex = ref(1);
-	// 定义响应式数据pageSize，用于存储每页显示条数
 	const pageSize = ref(10);
-	// 定义响应式数据totalPage，用于存储总页数
 	const totalPage = ref(0);
-	// 定义响应式数据addOrUpdateVisible，用于控制新增或编辑模态框的显示与隐藏
-	const addOrUpdateVisible = ref(false);
-
+	const userINFO = {
+		userId: 1,
+		idNumber: "32992581308",
+		name: "赵伟",
+		gender: "F",
+		birthDate: "1985-01-24",
+		email: "赵伟@qq.com",
+		phoneNumber: "1473365997",
+	};
 	const getDataList = () => {
-		// 发起获取数据请求
+		if (pageIndex.value < 1) {
+			pageIndex.value = 1;
+		}
 		LHG({
-			url: "/pesticide/crop/list",
 			method: "get",
+			url: "/api/talent/page",
 			params: {
-				page: pageIndex.value,
-				limit: pageSize.value,
+				pageIndex: pageIndex.value,
+				pageSize: pageSize.value,
 				name: searchForm.name,
+				idNumber: searchForm.idNumber,
+				phoneNumber: searchForm.phoneNumber,
 			},
-		}).then(({ data }) => {
-			if (data && data.code === 0) {
-				dataList.value = data.page.records;
-				totalPage.value = data.page.total;
+		}).then((res) => {
+			if (res && res.code === 1) {
+				ElMessage({
+					message: "查询成功",
+					type: "success",
+					duration: 1500,
+				});
+				dataList.value = res.data.records;
+				totalPage.value = res.data.total;
 			} else {
-				dataList.value = [];
-				totalPage.value = 0;
+				ElMessage({
+					message: "操作失败",
+					type: "error",
+					duration: 1500,
+				});
 			}
 		});
 	};
 
-	// const addOrUpdateHandle = (id) => {
-	// 	// 处理新增/修改操作
-	// 	addOrUpdateVisible.value = true;
-	// 	nextTick(() => {
-	// 		addOrUpdateRef.value.init(id);
-	// 	});
-	// };
+	const updateData = (id) => {
+		// 跳转到修改页面
+		ElMessage({
+			message: `跳转到修改页面，ID: ${id}`,
+			type: "success",
+			duration: 1500,
+		});
+		router.push(`/talent/edit/${id}`);
+	};
 
 	const showDetails = (id) => {
 		// 展示详情
-		addOrUpdateVisible.value = true;
-		nextTick(() => {
-			addOrUpdateRef.value.init(id, true);
+		ElMessage({
+			message: `跳转到详情页面，ID: ${id}`,
+			type: "success",
+			duration: 1500,
 		});
+		router.push(`/talent/detail/${id}`);
 	};
 
-	const deleteHandle = (id) => {
-		// 处理删除操作
-		let ids = id ? [id] : dataListSelections.value.map((item) => item.id);
+	const deleteSelectionsHandle = () => {
+		// 批量删除
 		ElMessageBox.confirm("确定对所选项进行[删除]操作?", "提示", {
 			confirmButtonText: "确定",
 			cancelButtonText: "取消",
 			type: "warning",
 		})
 			.then(() => {
+				const ids = dataListSelections.value.map((item) => item.id);
 				LHG({
-					url: "/pesticide/crop/delete",
-					method: "post",
-					data: ids,
-				}).then(({ data }) => {
-					if (data && data.code === 0) {
+					method: "delete",
+					url: "/api/talent/delete",
+					data: {
+						ids: ids,
+					},
+				}).then((res) => {
+					if (res && res.code === 1) {
+						ElMessage({
+							message: "操作成功",
+							type: "success",
+							duration: 1500,
+						});
+						getDataList();
+					}
+				});
+			})
+			.catch(() => {});
+	};
+
+	const deleteHandle = (name, id) => {
+		// 单个删除
+		ElMessageBox.confirm(`确定删除人才: ${name} ?`, "提示", {
+			confirmButtonText: "确定",
+			cancelButtonText: "取消",
+			type: "warning",
+		})
+			.then(() => {
+				LHG({
+					method: "delete",
+					url: `/api/talent/delete/${id}`,
+				}).then((res) => {
+					if (res && res.code === 1) {
 						ElMessage({
 							message: "操作成功",
 							type: "success",
@@ -194,7 +270,9 @@
 		getDataList();
 	};
 
-	const addOrUpdateRef = ref(null);
+	const addTalent = () => {
+		router.push("/talent/add");
+	};
 
 	onMounted(() => {
 		// 组件挂载时获取数据

@@ -1,7 +1,10 @@
 import router from "@/router";
 import { useUserStore } from "@/stores/user";
+import { useRouteStore } from "@/stores/route";
 import axios from "axios";
 import { ElMessage } from "element-plus";
+import { useRoute } from "vue-router";
+
 const { VITE_APP_URL, VITE_APP_TIMEOUT } = import.meta.env;
 const LHG = axios.create({
 	baseURL: VITE_APP_URL, //baseURL='http://127.0.0.1:8084/api'
@@ -11,7 +14,17 @@ const LHG = axios.create({
 LHG.interceptors.request.use(
 	(config) => {
 		const userStore = useUserStore();
+
 		const token = userStore.getToken();
+
+		const routeStore = useRouteStore(); // 获取 route store
+
+		const route = routeStore.currentRoute;
+		console.log("In axios.js route::: ", route);
+
+		if (route.path == "/login" || route.path == "/register") {
+			return config;
+		}
 		if (token) {
 			config.headers.Authorization = token;
 		} else {

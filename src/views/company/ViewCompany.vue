@@ -114,15 +114,17 @@
 	const totalPage = ref(0);
 
 	const getDataList = () => {
-		console.log(
-			"In ViewCompany.vue searchForm.companyName::: ",
-			searchForm.companyName
-		);
-
+		if (pageIndex.value < 1) {
+			pageIndex.value = 1;
+		}
+		if (searchForm.companyName === "") {
+			searchForm.companyName = null;
+		}
+		//请求里的data参数是post请求的参数，params是get请求的参数,url查询参数
 		LHG({
 			method: "get",
 			url: "/api/company/page",
-			data: {
+			params: {
 				pageIndex: pageIndex.value,
 				pageSize: pageSize.value,
 				companyName: searchForm.companyName,
@@ -131,6 +133,11 @@
 			console.info("🚀 ~ file:ViewCompany.vue method: line:122 -----", res);
 
 			if (res && res.code === 1) {
+				ElMessage({
+					message: "查询成功",
+					type: "success",
+					duration: 1500,
+				});
 				dataList.value = res.data.records;
 				totalPage.value = res.data.total;
 			} else {

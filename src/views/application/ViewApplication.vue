@@ -24,7 +24,7 @@
 			:disabled="dataListSelections.length <= 0"
 			>批量删除</el-button
 		>
-		
+
 		<!-- <addApplicationDrow></addApplicationDrow> -->
 		<!-- 表格 -->
 		<el-table
@@ -46,9 +46,7 @@
 			<el-table-column
 				prop="reviewResult"
 				label="审核结果"></el-table-column>
-			<el-table-column
-				prop="reviewStatus"
-				label="审核状态"></el-table-column>
+
 			<el-table-column
 				prop="idNumber"
 				label="身份证号码"></el-table-column>
@@ -103,7 +101,7 @@
 			})
 			.catch(() => {});
 	};
-	
+
 	const searchForm = reactive({
 		idNumber: "",
 	});
@@ -122,7 +120,6 @@
 				idNumber: searchForm.idNumber,
 			},
 		}).then((res) => {
-			console.log("In ViewApplication.vue res::: ", res);
 			if (res.code == 1) {
 				ElMessage({
 					message: "查询成功",

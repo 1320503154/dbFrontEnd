@@ -120,9 +120,12 @@
 				jobName: searchForm.jobName,
 			},
 		}).then((res) => {
-			console.info("🚀 ~ file:ViewPosition.vue method: line:130 -----", res);
-
 			if (res && res.code == 1) {
+				ElMessage({
+					message: "查询成功",
+					type: "success",
+					duration: 1500,
+				});
 				dataList.value = res.data.records;
 				totalPage.value = res.data.total;
 			} else {

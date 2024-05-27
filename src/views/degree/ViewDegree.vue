@@ -8,70 +8,34 @@
 				<!-- 输入框 -->
 				<el-input
 					v-model="searchForm.name"
-					placeholder="请输入作物名"
+					placeholder="请输入姓名"
 					clearable></el-input>
 			</el-form-item>
 			<el-form-item>
 				<!-- 查询按钮 -->
-				<el-button @click="getDataList">查询</el-button>
+				<el-button @click="getEducationList">查询</el-button>
 			</el-form-item>
 		</el-form>
 
-		<!-- 新建按钮 -->
-		<!-- <el-button
-			type="primary"
-			@click="addOrUpdateHandle"
-			size="small"
-			>新建</el-button
-		> -->
-		<!-- 批量删除按钮 -->
-		<el-button
-			type="danger"
-			@click="deleteHandle"
-			:disabled="dataListSelections.length <= 0"
-			>批量删除</el-button
-		>
-
 		<!-- 表格 -->
 		<el-table
-			:data="dataList"
-			style="width: 100%"
-			@selection-change="selectionChangeHandle">
+			:data="educationList"
+			style="width: 100%">
 			<el-table-column
-				type="selection"
-				width="50"></el-table-column>
+				prop="school_name"
+				label="学校名称"></el-table-column>
 			<el-table-column
-				prop="cropName"
-				label="作物名"></el-table-column>
+				prop="major"
+				label="专业"></el-table-column>
 			<el-table-column
-				prop="orderNum"
-				label="排序号"></el-table-column>
+				prop="enrollment_date"
+				label="入学日期"></el-table-column>
 			<el-table-column
-				label="操作"
-				fixed="right"
-				width="150">
-				<template #default="scope">
-					<!-- 操作按钮 -->
-					<el-button
-						type="text"
-						size="small"
-						@click="addOrUpdateHandle(scope.row.id)"
-						>修改</el-button
-					>
-					<el-button
-						type="text"
-						size="small"
-						@click="showDetails(scope.row.id)"
-						>查看</el-button
-					>
-					<el-button
-						type="text"
-						size="small"
-						@click="deleteHandle(scope.row.id)"
-						>删除</el-button
-					>
-				</template>
-			</el-table-column>
+				prop="graduation_date"
+				label="毕业日期"></el-table-column>
+			<el-table-column
+				prop="id_number"
+				label="身份证号"></el-table-column>
 		</el-table>
 
 		<!-- 分页 -->
@@ -83,115 +47,67 @@
 			:page-size="pageSize"
 			:total="totalPage"
 			layout="total, sizes, prev, pager, next, jumper"></el-pagination>
-
-		<!-- 新增/修改组件 -->
-		<AddOrUpdate
-			v-if="addOrUpdateVisible"
-			ref="addOrUpdate"
-			@refreshDataList="getDataList"></AddOrUpdate>
 	</div>
 </template>
-
 <script setup>
-	import { ref, reactive, onMounted, nextTick } from "vue";
-	import LHG from "@/utils/axios";
+	import { ref, reactive, onMounted } from "vue";
+	import LHG from "@/utils/axios.js";
+	import { ElMessage } from "element-plus";
+
+	// 搜索表单
 	const searchForm = reactive({
 		name: "",
 	});
 
-	const dataList = ref([]);
-	const dataListSelections = ref([]);
+	// 学历数据
+	const educationList = ref([]);
 	const pageIndex = ref(1);
 	const pageSize = ref(10);
 	const totalPage = ref(0);
-	const addOrUpdateVisible = ref(false);
 
-	const getDataList = () => {
-		// 发起获取数据请求
+	// 获取学历列表
+	const getEducationList = () => {
 		LHG({
-			url: "/pesticide/crop/list",
 			method: "get",
+			url: "/api/education/page",
 			params: {
-				page: pageIndex.value,
-				limit: pageSize.value,
+				pageIndex: pageIndex.value,
+				pageSize: pageSize.value,
 				name: searchForm.name,
 			},
-		}).then(({ data }) => {
-			if (data && data.code === 0) {
-				dataList.value = data.page.records;
-				totalPage.value = data.page.total;
+		}).then((res) => {
+			if (res && res.code == 1) {
+				ElMessage({
+					message: "查询成功",
+					type: "success",
+					duration: 1500,
+				});
+				educationList.value = res.data.records;
+				totalPage.value = res.data.total;
 			} else {
-				dataList.value = [];
-				totalPage.value = 0;
+				ElMessage({
+					message: "获取数据失败",
+					type: "error",
+					duration: 1500,
+				});
 			}
 		});
 	};
 
-	const addOrUpdateHandle = (id) => {
-		// 处理新增/修改操作
-		addOrUpdateVisible.value = true;
-		nextTick(() => {
-			addOrUpdateRef.value.init(id);
-		});
-	};
-
-	const showDetails = (id) => {
-		// 展示详情
-		addOrUpdateVisible.value = true;
-		nextTick(() => {
-			addOrUpdateRef.value.init(id, true);
-		});
-	};
-
-	const deleteHandle = (id) => {
-		// 处理删除操作
-		let ids = id ? [id] : dataListSelections.value.map((item) => item.id);
-		ElMessageBox.confirm("确定对所选项进行[删除]操作?", "提示", {
-			confirmButtonText: "确定",
-			cancelButtonText: "取消",
-			type: "warning",
-		})
-			.then(() => {
-				LHG({
-					url: "/pesticide/crop/delete",
-					method: "post",
-					data: ids,
-				}).then(({ data }) => {
-					if (data && data.code === 0) {
-						ElMessage({
-							message: "操作成功",
-							type: "success",
-							duration: 1500,
-						});
-						getDataList();
-					}
-				});
-			})
-			.catch(() => {});
-	};
-
-	const selectionChangeHandle = (val) => {
-		// 处理表格选择事件
-		dataListSelections.value = val;
-	};
-
+	// 分页大小变化
 	const sizeChangeHandle = (val) => {
-		// 处理分页大小变化
 		pageSize.value = val;
 		pageIndex.value = 1;
-		getDataList();
+		getEducationList();
 	};
 
+	// 当前页变化
 	const currentChangeHandle = (val) => {
-		// 处理当前页变化
 		pageIndex.value = val;
-		getDataList();
+		getEducationList();
 	};
-
-	const addOrUpdateRef = ref(null);
 
 	onMounted(() => {
-		// 组件挂载时获取数据
-		getDataList();
+		getEducationList();
 	});
 </script>

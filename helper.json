@@ -1,0 +1,8 @@
+{
+    "path":{
+        "root":"@=src",
+        "api":"src/api",
+        "request":"../utils/axios.js"
+    },
+    "api":"https://apifox.com/apidoc/shared-d47b7526-9cb7-4625-9dbd-438e1464c156"
+}

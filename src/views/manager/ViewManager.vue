@@ -8,7 +8,7 @@
 				<!-- 输入框 -->
 				<el-input
 					v-model="searchForm.name"
-					placeholder="请输入作物名"
+					placeholder="请输入负责人姓名"
 					clearable></el-input>
 			</el-form-item>
 			<el-form-item>
@@ -17,20 +17,13 @@
 			</el-form-item>
 		</el-form>
 
-		<!-- 新建按钮 -->
-		<!-- <el-button
-			type="primary"
-			@click="addOrUpdateHandle"
-			size="small"
-			>新建</el-button
-		> -->
 		<!-- 批量删除按钮 -->
 		<el-button
 			type="danger"
-			@click="deleteHandle"
-			:disabled="dataListSelections.length <= 0"
-			>批量删除</el-button
-		>
+			@click="deleteSelectionsHandle"
+			:disabled="dataListSelections.length <= 0">
+			批量删除
+		</el-button>
 
 		<!-- 表格 -->
 		<el-table
@@ -41,11 +34,17 @@
 				type="selection"
 				width="50"></el-table-column>
 			<el-table-column
-				prop="cropName"
-				label="作物名"></el-table-column>
+				prop="name"
+				label="负责人姓名"></el-table-column>
 			<el-table-column
-				prop="orderNum"
-				label="排序号"></el-table-column>
+				prop="phoneNumber"
+				label="电话"></el-table-column>
+			<el-table-column
+				prop="email"
+				label="邮箱"></el-table-column>
+			<el-table-column
+				prop="companyId"
+				label="公司ID"></el-table-column>
 			<el-table-column
 				label="操作"
 				fixed="right"
@@ -53,21 +52,15 @@
 				<template #default="scope">
 					<!-- 操作按钮 -->
 					<el-button
-						type="text"
+						link
 						size="small"
-						@click="addOrUpdateHandle(scope.row.id)"
-						>修改</el-button
-					>
-					<el-button
-						type="text"
-						size="small"
-						@click="showDetails(scope.row.id)"
+						@click="showDetails(scope.row.personId)"
 						>查看</el-button
 					>
 					<el-button
-						type="text"
+						link
 						size="small"
-						@click="deleteHandle(scope.row.id)"
+						@click="deleteHandle(scope.row.personId)"
 						>删除</el-button
 					>
 				</template>
@@ -83,115 +76,133 @@
 			:page-size="pageSize"
 			:total="totalPage"
 			layout="total, sizes, prev, pager, next, jumper"></el-pagination>
-
-		<!-- 新增/修改组件 -->
-		<AddOrUpdate
-			v-if="addOrUpdateVisible"
-			ref="addOrUpdate"
-			@refreshDataList="getDataList"></AddOrUpdate>
 	</div>
 </template>
 
 <script setup>
-	import { ref, reactive, onMounted, nextTick } from "vue";
-	import LHG from "@/utils/axios";
+	import { ref, reactive, onMounted } from "vue";
+	import axios from "axios";
+	import LHG from "@/utils/axios.js";
+	import { ElMessage, ElMessageBox } from "element-plus";
+
+	// 搜索表单
 	const searchForm = reactive({
 		name: "",
 	});
 
+	// 列表数据
 	const dataList = ref([]);
 	const dataListSelections = ref([]);
 	const pageIndex = ref(1);
 	const pageSize = ref(10);
 	const totalPage = ref(0);
-	const addOrUpdateVisible = ref(false);
 
+	// 获取数据列表
 	const getDataList = () => {
-		// 发起获取数据请求
 		LHG({
-			url: "/pesticide/crop/list",
 			method: "get",
+			url: "/api/responsibleperson/page",
 			params: {
-				page: pageIndex.value,
-				limit: pageSize.value,
+				pageIndex: pageIndex.value,
+				pageSize: pageSize.value,
 				name: searchForm.name,
 			},
-		}).then(({ data }) => {
-			if (data && data.code === 0) {
-				dataList.value = data.page.records;
-				totalPage.value = data.page.total;
+		}).then((res) => {
+			if (res && res.code == 1) {
+				ElMessage({
+					message: "查询成功",
+					type: "success",
+					duration: 1500,
+				});
+				dataList.value = res.data.records;
+				totalPage.value = res.data.total;
 			} else {
-				dataList.value = [];
-				totalPage.value = 0;
+				ElMessage({
+					message: "操作失败",
+					type: "error",
+					duration: 1500,
+				});
 			}
 		});
 	};
 
-	const addOrUpdateHandle = (id) => {
-		// 处理新增/修改操作
-		addOrUpdateVisible.value = true;
-		nextTick(() => {
-			addOrUpdateRef.value.init(id);
-		});
-	};
-
+	// 显示详细信息
 	const showDetails = (id) => {
-		// 展示详情
-		addOrUpdateVisible.value = true;
-		nextTick(() => {
-			addOrUpdateRef.value.init(id, true);
+		ElMessage({
+			message: `显示详情: ${id}`,
+			type: "info",
+			duration: 1500,
 		});
 	};
 
-	const deleteHandle = (id) => {
-		// 处理删除操作
-		let ids = id ? [id] : dataListSelections.value.map((item) => item.id);
+	// 批量删除
+	const deleteSelectionsHandle = () => {
 		ElMessageBox.confirm("确定对所选项进行[删除]操作?", "提示", {
 			confirmButtonText: "确定",
 			cancelButtonText: "取消",
 			type: "warning",
 		})
 			.then(() => {
+				ElMessage({
+					message: "批量删除成功",
+					type: "success",
+					duration: 1500,
+				});
+				// 可以在这里添加实际的删除逻辑
+			})
+			.catch(() => {});
+	};
+
+	// 单个删除
+	const deleteHandle = (id) => {
+		ElMessageBox.confirm("确定进行[删除]操作?", "提示", {
+			confirmButtonText: "确定",
+			cancelButtonText: "取消",
+			type: "warning",
+		})
+			.then(() => {
 				LHG({
-					url: "/pesticide/crop/delete",
-					method: "post",
-					data: ids,
-				}).then(({ data }) => {
-					if (data && data.code === 0) {
+					method: "delete",
+					url: `/api/responsibleperson/${id}`,
+				}).then((res) => {
+					if (res && res.code == 1) {
 						ElMessage({
-							message: "操作成功",
+							message: "删除成功",
 							type: "success",
 							duration: 1500,
 						});
 						getDataList();
+					} else {
+						ElMessage({
+							message: "删除失败",
+							type: "error",
+							duration: 1500,
+						});
 					}
 				});
 			})
 			.catch(() => {});
 	};
 
+	// 表格选择变化
 	const selectionChangeHandle = (val) => {
-		// 处理表格选择事件
 		dataListSelections.value = val;
 	};
 
+	// 分页大小变化
 	const sizeChangeHandle = (val) => {
-		// 处理分页大小变化
 		pageSize.value = val;
 		pageIndex.value = 1;
 		getDataList();
 	};
 
+	// 当前页变化
 	const currentChangeHandle = (val) => {
-		// 处理当前页变化
 		pageIndex.value = val;
 		getDataList();
 	};
 
-	const addOrUpdateRef = ref(null);
-
 	onMounted(() => {
-		// 组件挂载时获取数据
 		getDataList();
 	});
 </script>
