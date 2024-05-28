@@ -65,12 +65,13 @@
 <script setup>
 	import { reactive, ref } from "vue";
 	import { ElMessage } from "element-plus";
+	import { useUserStore } from "@/stores/user";
 	import LHG from "@/utils/axios";
+	const userInfo = useUserStore().getUserInfo();
 	const formSize = ref("default");
 	const ruleFormRef = ref();
-	const UserId = ref(ruleFormRef.idNumber / 3 % 10000);
 	const ruleForm = reactive({
-		userId: UserId.value,
+		userId: userInfo.id,
 		idNumber: "1234567",
 		name: "张三",
 		email: "1320503154@qq.com",

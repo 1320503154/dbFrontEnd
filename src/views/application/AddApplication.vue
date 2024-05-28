@@ -4,7 +4,7 @@
 		:model="applicationReview"
 		:rules="rules"
 		label-width="100px">
-		<el-form-item
+		<!-- <el-form-item
 			label="应聘时间"
 			prop="applicationTime">
 			<el-date-picker
@@ -37,11 +37,11 @@
 					label="审核不通过"
 					:value="2" />
 			</el-select>
-		</el-form-item>
+		</el-form-item> -->
 		<el-form-item
 			label="身份证号码"
-			prop="idNumber">
-			<el-input v-model="applicationReview.idNumber" />
+			prop="userId">
+			<el-input v-model="applicationReview.userId" />
 		</el-form-item>
 		<el-form-item
 			label="职位ID"
@@ -62,31 +62,37 @@
 <script setup>
 	import { ref, reactive } from "vue";
 	import { ElMessage } from "element-plus";
+	import { useUserStore } from "@/stores/user";
 	import LHG from "@/utils/axios";
-
+	const userInfo = useUserStore().getUserInfo();
+	// const UserId = computed(() => applicationReview.userId / 7 % 1000);
+	// const UserId = ref(applicationReview.userId / 7 % 1000);
 	const applicationReview = reactive({
-		applicationTime: "",
-		reviewTime: "",
-		reviewResult: "申请通过",
-		reviewStatus: 0,
-		idNumber: "641218201312286200",
+		// applicationTime: "",
+		// reviewTime: "",
+		// reviewResult: "申请通过",
+		// reviewStatus: 0,
+		userId: userInfo.id,
+		// userId: "641218201312286200",
+		// userId: UserId.value,
 		jobId: 11,
 	});
+	
 	const rules = {
 		applyId: [{ required: true, message: "请输入申请ID", trigger: "blur" }],
 		applicationTime: [
 			{ required: true, message: "请选择应聘时间", trigger: "change" },
 		],
 		reviewTime: [
-			{ required: true, message: "请选择审核时间", trigger: "change" },
+			{  message: "请选择审核时间", trigger: "change" },
 		],
 		reviewResult: [
-			{ required: true, message: "请输入审核结果", trigger: "blur" },
+			{  message: "请输入审核结果", trigger: "blur" },
 		],
 		reviewStatus: [
 			{ required: true, message: "请选择审核状态", trigger: "change" },
 		],
-		idNumber: [
+		userId: [
 			{ required: true, message: "请输入身份证号码", trigger: "blur" },
 		],
 		jobId: [{ required: true, message: "请输入职位ID", trigger: "blur" }],
