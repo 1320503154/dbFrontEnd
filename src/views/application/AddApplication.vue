@@ -4,7 +4,7 @@
 		:model="applicationReview"
 		:rules="rules"
 		label-width="100px">
-		<el-form-item
+		<!-- <el-form-item
 			label="应聘时间"
 			prop="applicationTime">
 			<el-date-picker
@@ -37,7 +37,7 @@
 					label="审核不通过"
 					:value="2" />
 			</el-select>
-		</el-form-item>
+		</el-form-item> -->
 		<el-form-item
 			label="身份证号码"
 			prop="idNumber">
@@ -63,13 +63,15 @@
 	import { ref, reactive } from "vue";
 	import { ElMessage } from "element-plus";
 	import LHG from "@/utils/axios";
-
+	import { useUserStore } from "@/stores/user";
+	const userInfo = useUserStore().getUserInfo();
 	const applicationReview = reactive({
-		applicationTime: "",
-		reviewTime: "",
-		reviewResult: "申请通过",
-		reviewStatus: 0,
-		idNumber: "641218201312286200",
+		// applicationTime: "",
+		// reviewTime: "",
+		// reviewResult: "申请通过",
+		// reviewStatus: 0,
+		// idNumber: "641218201312286200",
+		userId: userInfo.value,
 		jobId: 11,
 	});
 	const rules = {
@@ -78,10 +80,10 @@
 			{ required: true, message: "请选择应聘时间", trigger: "change" },
 		],
 		reviewTime: [
-			{ required: true, message: "请选择审核时间", trigger: "change" },
+			{ message: "请选择审核时间", trigger: "change" },
 		],
 		reviewResult: [
-			{ required: true, message: "请输入审核结果", trigger: "blur" },
+			{ message: "请输入审核结果", trigger: "blur" },
 		],
 		reviewStatus: [
 			{ required: true, message: "请选择审核状态", trigger: "change" },

@@ -181,6 +181,7 @@
 			type: "warning",
 		})
 			.then(() => {
+				console.log(dataListSelections.value.map((item) => item.companyName));
 				const ids = dataListSelections.value.map((item) => item.companyId);
 				LHG({
 					method: "delete",
