@@ -85,13 +85,13 @@
 					<el-button
 						link
 						size="small"
-						@click="updateData(scope.row.userId)"
+						@click="updateData(scope.row)"
 						>修改</el-button
 					>
 					<el-button
 						link
 						size="small"
-						@click="showDetails(scope.row.userId)"
+						@click="showDetails(scope.row)"
 						>查看</el-button
 					>
 					<el-button
@@ -103,7 +103,64 @@
 				</template>
 			</el-table-column>
 		</el-table>
-
+		<!-- 其他代码保持不变 -->
+		<el-dialog
+			v-model="dialogEditVisible"
+			title="修改人才信息"
+			width="500">
+			<el-form
+				:model="editForm"
+				label-width="100px">
+				<el-form-item label="姓名">
+					<el-input
+						v-model="editForm.name"
+						autocomplete="off" />
+				</el-form-item>
+				<el-form-item label="身份证号">
+					<el-input
+						v-model="editForm.idNumber"
+						autocomplete="off" />
+				</el-form-item>
+				<el-form-item label="手机号">
+					<el-input
+						v-model="editForm.phoneNumber"
+						autocomplete="off" />
+				</el-form-item>
+				<el-form-item label="性别">
+					<el-select
+						v-model="editForm.gender"
+						placeholder="请选择性别">
+						<el-option
+							label="男"
+							value="M" />
+						<el-option
+							label="女"
+							value="F" />
+					</el-select>
+				</el-form-item>
+				<el-form-item label="生日">
+					<el-date-picker
+						v-model="editForm.birthDate"
+						type="date"
+						placeholder="选择日期" />
+				</el-form-item>
+				<el-form-item label="电子邮箱">
+					<el-input
+						v-model="editForm.email"
+						autocomplete="off" />
+				</el-form-item>
+			</el-form>
+			<template #footer>
+				<div class="dialog-footer">
+					<el-button @click="dialogEditVisible = false">取消</el-button>
+					<el-button
+						type="primary"
+						@click="updateTalentInfo"
+						>确认</el-button
+					>
+				</div>
+			</template>
+		</el-dialog>
 		<!-- 分页 -->
 		<el-pagination
 			@size-change="sizeChangeHandle"
@@ -136,14 +193,27 @@
 	const pageIndex = ref(1);
 	const pageSize = ref(10);
 	const totalPage = ref(0);
-	const userINFO = {
-		userId: 1,
-		idNumber: "32992581308",
-		name: "赵伟",
-		gender: "F",
-		birthDate: "1985-01-24",
-		email: "赵伟@qq.com",
-		phoneNumber: "1473365997",
+	// 编辑对话框的显示控制和表单数据
+	const dialogEditVisible = ref(false);
+
+	const editForm = reactive({
+		userId: "",
+		name: "",
+		idNumber: "",
+		phoneNumber: "",
+		gender: "",
+		birthDate: "",
+		email: "",
+	});
+	const updateData = (row) => {
+		// 填充编辑表单的数据
+		editForm.name = row.name;
+		editForm.idNumber = row.idNumber;
+		editForm.phoneNumber = row.phoneNumber;
+		editForm.gender = row.gender;
+		editForm.birthDate = row.birthDate;
+		editForm.email = row.email;
+		dialogEditVisible.value = true;
 	};
 	const getDataList = () => {
 		if (pageIndex.value < 1) {
@@ -177,25 +247,41 @@
 			}
 		});
 	};
-
-	const updateData = (id) => {
-		// 跳转到修改页面
-		ElMessage({
-			message: `跳转到修改页面，ID: ${id}`,
-			type: "success",
-			duration: 1500,
+	const updateTalentInfo = () => {
+		LHG({
+			method: "put",
+			url: "/api/talent/update",
+			data: {
+				idNumber: editForm.idNumber,
+				name: editForm.name,
+				gender: editForm.gender,
+				birthDate: editForm.birthDate,
+				email: editForm.email,
+				phoneNumber: editForm.phoneNumber,
+			},
+		}).then((res) => {
+			if (res && res.code === 1) {
+				ElMessage({
+					message: "修改成功",
+					type: "success",
+					duration: 1500,
+				});
+				dialogEditVisible.value = false;
+				getDataList();
+			} else {
+				ElMessage({
+					message: "修改失败",
+					type: "error",
+					duration: 1500,
+				});
+			}
 		});
-		router.push(`/talent/edit/${id}`);
 	};
 
-	const showDetails = (id) => {
-		// 展示详情
-		ElMessage({
-			message: `跳转到详情页面，ID: ${id}`,
-			type: "success",
-			duration: 1500,
-		});
-		router.push(`/talent/detail/${id}`);
+	const showDetails = (info) => {
+		// 查看详情
+		updateData(info);
+		dialogEditVisible.value = true;
 	};
 
 	const deleteSelectionsHandle = () => {

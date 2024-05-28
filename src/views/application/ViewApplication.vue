@@ -121,6 +121,7 @@
 				idNumber: searchForm.idNumber,
 			},
 		}).then((res) => {
+			console.log(res.data.records);
 			if (res.code == 1) {
 				ElMessage({
 					message: "查询成功",

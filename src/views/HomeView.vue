@@ -8,6 +8,7 @@
 	const route = useRoute();
 	const userStore = useUserStore();
 	const userInfo = computed(() => userStore.userInfo);
+	console.log(userInfo.value);
 	const title = ref(route.meta.title);
 
 	watch(

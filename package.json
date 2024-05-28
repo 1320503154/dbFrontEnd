@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite --host 172.20.224.1",
+    "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
     "delete":"pm2 stop all && pm2 delete all "
