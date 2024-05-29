@@ -38,7 +38,7 @@ LHG.interceptors.request.use(
 );
 LHG.interceptors.response.use(
 	(response) => {
-		return response.data;
+		return response.data;//res=>res.data
 	},
 	(error) => {
 		return Promise.reject(error);

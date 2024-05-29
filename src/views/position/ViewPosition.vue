@@ -177,12 +177,12 @@
 	const handleSubmit = async () => {
 		try {
 			const [descRes, numRes] = await Promise.all([
-				LHG.put("/api/jobrequirement/update/description", {
+				LHG.post("/api/jobrequirement/update/description", {
 					jobName: form.jobName,
 					companyId: form.companyId,
 					jobDescription: form.jobDescription,
 				}),
-				LHG.put("/api/jobrequirement/update/numberRequired", {
+				LHG.post("/api/jobrequirement/update/numberRequired", {
 					jobName: form.jobName,
 					companyId: form.companyId,
 					numberRequired: form.numberRequired,

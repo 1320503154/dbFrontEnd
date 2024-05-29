@@ -38,11 +38,11 @@
 					:value="2" />
 			</el-select>
 		</el-form-item> -->
-		<el-form-item
+		<!-- <el-form-item
 			label="身份证号码"
 			prop="idNumber">
 			<el-input v-model="applicationReview.idNumber" />
-		</el-form-item>
+		</el-form-item> -->
 		<el-form-item
 			label="职位ID"
 			prop="jobId">
@@ -65,13 +65,9 @@
 	import LHG from "@/utils/axios";
 	import { useUserStore } from "@/stores/user";
 	const userInfo = useUserStore().getUserInfo();
+	console.log(userInfo);
 	const applicationReview = reactive({
-		// applicationTime: "",
-		// reviewTime: "",
-		// reviewResult: "申请通过",
-		// reviewStatus: 0,
-		// idNumber: "641218201312286200",
-		userId: userInfo.value,
+		userId: userInfo.id,
 		jobId: 11,
 	});
 	const rules = {

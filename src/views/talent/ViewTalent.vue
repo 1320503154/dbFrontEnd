@@ -207,6 +207,8 @@
 	});
 	const updateData = (row) => {
 		// 填充编辑表单的数据
+		console.log(row);
+		editForm.userId=row.userId;
 		editForm.name = row.name;
 		editForm.idNumber = row.idNumber;
 		editForm.phoneNumber = row.phoneNumber;
@@ -249,9 +251,10 @@
 	};
 	const updateTalentInfo = () => {
 		LHG({
-			method: "put",
+			method: "post",
 			url: "/api/talent/update",
 			data: {
+				userId:editForm.userId,
 				idNumber: editForm.idNumber,
 				name: editForm.name,
 				gender: editForm.gender,
