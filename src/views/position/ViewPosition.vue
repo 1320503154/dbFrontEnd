@@ -176,20 +176,15 @@
 
 	const handleSubmit = async () => {
 		try {
-			const [descRes, numRes] = await Promise.all([
-				LHG.post("/api/jobrequirement/update/description", {
-					jobName: form.jobName,
-					companyId: form.companyId,
-					jobDescription: form.jobDescription,
-				}),
-				LHG.post("/api/jobrequirement/update/numberRequired", {
-					jobName: form.jobName,
-					companyId: form.companyId,
-					numberRequired: form.numberRequired,
-				}),
-			]);
+			const params = {
+				jobName: form.jobName,
+				companyId: form.companyId,
+				numberRequired: form.numberRequired,
+			};
 
-			if (descRes.code === 1 && numRes.code === 1) {
+			const response = await LHG.post("/api/jobrequirement/update/numberRequired", null, { params });
+
+			if (response.code === 1) {
 				showMessage("更新成功");
 				visible.value = false;
 				getDataList();
