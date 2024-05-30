@@ -4,6 +4,7 @@
 	import navBarLeft from "@/components/navBarLeft.vue";
 	import { ArrowRight } from "@element-plus/icons-vue";
 	import { useUserStore } from "@/stores/user.js";
+	import { Minus, Plus } from "@element-plus/icons-vue";
 
 	const route = useRoute();
 	const userStore = useUserStore();
