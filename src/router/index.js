@@ -1,24 +1,23 @@
 import { createRouter, createWebHistory } from "vue-router";
-
-// 引入相应的组件
-import AddTalent from "@/views/talent/AddTalent.vue";
-import ViewTalent from "@/views/talent/ViewTalent.vue";
-import AddApplication from "@/views/application/AddApplication.vue";
-import ViewApplication from "@/views/application/ViewApplication.vue";
-import AddPosition from "@/views/position/AddPosition.vue";
-import ViewPosition from "@/views/position/ViewPosition.vue";
-import AddCompany from "@/views/company/AddCompany.vue";
-import ViewCompany from "@/views/company/ViewCompany.vue";
-import AddManager from "@/views/manager/AddManager.vue";
-import ViewManager from "@/views/manager/ViewManager.vue";
-import AddDegree from "@/views/degree/AddDegree.vue";
-import ViewDegree from "@/views/degree/ViewDegree.vue";
-import HomeView from "@/views/HomeView.vue";
-import AboutView from "@/views/AboutView.vue";
-import LoginView from "@/views/LoginView.vue";
-import MainLayout from "@/layouts/MainLayout.vue";
 import { useUserStore } from "@/stores/user.js";
 
+const HomeView = () => import("@/views/HomeView.vue");
+const AboutView = () => import("@/views/AboutView.vue");
+const LoginView = () => import("@/views/LoginView.vue");
+const MainLayout = () => import("@/layouts/MainLayout.vue");
+
+const AddTalent = () => import("@/views/talent/AddTalent.vue");
+const ViewTalent = () => import("@/views/talent/ViewTalent.vue");
+const AddApplication = () => import("@/views/application/AddApplication.vue");
+const ViewApplication = () => import("@/views/application/ViewApplication.vue");
+const AddPosition = () => import("@/views/position/AddPosition.vue");
+const ViewPosition = () => import("@/views/position/ViewPosition.vue");
+const AddCompany = () => import("@/views/company/AddCompany.vue");
+const ViewCompany = () => import("@/views/company/ViewCompany.vue");
+const AddManager = () => import("@/views/manager/AddManager.vue");
+const ViewManager = () => import("@/views/manager/ViewManager.vue");
+const AddDegree = () => import("@/views/degree/AddDegree.vue");
+const ViewDegree = () => import("@/views/degree/ViewDegree.vue");
 const routes = [
 	{
 		path: "/",
