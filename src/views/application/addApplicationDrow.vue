@@ -53,8 +53,8 @@
 					</el-form-item>
 					<el-form-item
 						label="身份证号码"
-						prop="idNumber">
-						<el-input v-model="applicationReview.idNumber" />
+						prop="userId">
+						<el-input v-model="applicationReview.userId" />
 					</el-form-item>
 					<el-form-item
 						label="职位ID"
@@ -83,13 +83,15 @@
 
 	const dialog = ref(false);
 	const loading = ref(false);
+	// const UserId = ref(ruleFormRef.userId / 7 % 10000);
 
 	const applicationReview = reactive({
-		applicationTime: "",
-		reviewTime: "",
-		reviewResult: "申请通过",
-		reviewStatus: 0,
-		idNumber: "641218201312286200",
+		// applicationTime: "",
+		// reviewTime: "",
+		// userId: UserId.value,
+		// reviewResult: "申请通过",
+		// reviewStatus: 0,
+		userId: "6412180",
 		jobId: 11,
 	});
 
@@ -98,15 +100,15 @@
 			{ required: true, message: "请选择应聘时间", trigger: "change" },
 		],
 		reviewTime: [
-			{ required: true, message: "请选择审核时间", trigger: "change" },
+			{ message: "请选择审核时间", trigger: "change" },
 		],
 		reviewResult: [
-			{ required: true, message: "请输入审核结果", trigger: "blur" },
+			{ message: "请输入审核结果", trigger: "blur" },
 		],
 		reviewStatus: [
 			{ required: true, message: "请选择审核状态", trigger: "change" },
 		],
-		idNumber: [
+		userId: [
 			{ required: true, message: "请输入身份证号码", trigger: "blur" },
 		],
 		jobId: [{ required: true, message: "请输入职位ID", trigger: "blur" }],

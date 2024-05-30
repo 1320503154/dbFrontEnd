@@ -4,8 +4,29 @@
 		:model="applicationReview"
 		:rules="rules"
 		label-width="100px">
-		<el-form-item
+		<!-- <el-form-item
 			label="职位"
+			prop="jobId">
+			<el-select
+				v-model="applicationReview.jobId"
+				filterable
+				placeholder="请选择职位"
+				@change="handleJobChange">
+				<el-option
+					v-for="job in jobList"
+					:key="job.jobId"
+					:label="job.jobName"
+					:value="job.jobId">
+				</el-option>
+			</el-select>
+		</el-form-item> -->
+		<el-form-item
+			label="身份证号码"
+			prop="userId">
+			<el-input v-model="applicationReview.userId" />
+		</el-form-item>
+		<el-form-item
+			label="职位ID"
 			prop="jobId">
 			<el-select
 				v-model="applicationReview.jobId"
@@ -34,6 +55,7 @@
 <script setup>
 	import { ref, reactive, onMounted } from "vue";
 	import { ElMessage } from "element-plus";
+	import { useUserStore } from "@/stores/user";
 	import LHG from "@/utils/axios";
 	import { useUserStore } from "@/stores/user";
 	import { useDataStore } from "@/stores/data";
@@ -43,6 +65,9 @@
 	console.log(userInfo);
 
 	const jobList = ref([]);
+	const userInfo = useUserStore().getUserInfo();
+	// const UserId = computed(() => applicationReview.userId / 7 % 1000);
+	// const UserId = ref(applicationReview.userId / 7 % 1000);
 	const applicationReview = reactive({
 		userId: userInfo.id,
 		jobId: null, // 默认为空，用户选择

@@ -65,6 +65,7 @@
 <script setup>
 	import { onMounted, reactive, ref } from "vue";
 	import { ElMessage } from "element-plus";
+	import { useUserStore } from "@/stores/user";
 	import LHG from "@/utils/axios";
 	import { getManagerList } from "@/api/manager";
 	import { useUserStore } from "@/stores/user";
