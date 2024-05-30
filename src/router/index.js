@@ -261,47 +261,47 @@ const routes = [
 			},
 		],
 	},
-	{
-		path: "/degree",
-		name: "Degree",
-		component: HomeView,
-		meta: {
-			requiresAuth: true,
-			title: "学位",
-			breadcrumb: [
-				{ name: "首页", path: "/" },
-				{ name: "学位", path: "/degree" },
-			],
-		},
-		children: [
-			{
-				path: "add",
-				name: "AddDegree",
-				component: AddDegree,
-				meta: {
-					title: "添加学位",
-					breadcrumb: [
-						{ name: "首页", path: "/" },
-						{ name: "学位", path: "/degree" },
-						{ name: "添加学位", path: "/degree/add" },
-					],
-				},
-			},
-			{
-				path: "view",
-				name: "ViewDegree",
-				component: ViewDegree,
-				meta: {
-					title: "查看学位",
-					breadcrumb: [
-						{ name: "首页", path: "/" },
-						{ name: "学位", path: "/degree" },
-						{ name: "查看学位", path: "/degree/view" },
-					],
-				},
-			},
-		],
-	},
+	// {
+	// 	path: "/degree",
+	// 	name: "Degree",
+	// 	component: HomeView,
+	// 	meta: {
+	// 		requiresAuth: true,
+	// 		title: "学位",
+	// 		breadcrumb: [
+	// 			{ name: "首页", path: "/" },
+	// 			{ name: "学位", path: "/degree" },
+	// 		],
+	// 	},
+	// 	children: [
+	// 		{
+	// 			path: "add",
+	// 			name: "AddDegree",
+	// 			component: AddDegree,
+	// 			meta: {
+	// 				title: "添加学位",
+	// 				breadcrumb: [
+	// 					{ name: "首页", path: "/" },
+	// 					{ name: "学位", path: "/degree" },
+	// 					{ name: "添加学位", path: "/degree/add" },
+	// 				],
+	// 			},
+	// 		},
+	// 		{
+	// 			path: "view",
+	// 			name: "ViewDegree",
+	// 			component: ViewDegree,
+	// 			meta: {
+	// 				title: "查看学位",
+	// 				breadcrumb: [
+	// 					{ name: "首页", path: "/" },
+	// 					{ name: "学位", path: "/degree" },
+	// 					{ name: "查看学位", path: "/degree/view" },
+	// 				],
+	// 			},
+	// 		},
+	// 	],
+	// },
 ];
 
 const router = createRouter({

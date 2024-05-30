@@ -4,49 +4,21 @@
 		:model="applicationReview"
 		:rules="rules"
 		label-width="100px">
-		<!-- <el-form-item
-			label="应聘时间"
-			prop="applicationTime">
-			<el-date-picker
-				v-model="applicationReview.applicationTime"
-				type="datetime" />
-		</el-form-item>
 		<el-form-item
-			label="审核时间"
-			prop="reviewTime">
-			<el-date-picker
-				v-model="applicationReview.reviewTime"
-				type="datetime" />
-		</el-form-item>
-		<el-form-item
-			label="审核结果"
-			prop="reviewResult">
-			<el-input v-model="applicationReview.reviewResult" />
-		</el-form-item>
-		<el-form-item
-			label="审核状态"
-			prop="reviewStatus">
-			<el-select v-model="applicationReview.reviewStatus">
-				<el-option
-					label="未审核"
-					:value="0" />
-				<el-option
-					label="审核通过"
-					:value="1" />
-				<el-option
-					label="审核不通过"
-					:value="2" />
-			</el-select>
-		</el-form-item> -->
-		<!-- <el-form-item
-			label="身份证号码"
-			prop="idNumber">
-			<el-input v-model="applicationReview.idNumber" />
-		</el-form-item> -->
-		<el-form-item
-			label="职位ID"
+			label="职位"
 			prop="jobId">
-			<el-input v-model="applicationReview.jobId" />
+			<el-select
+				v-model="applicationReview.jobId"
+				filterable
+				placeholder="请选择职位"
+				@change="handleJobChange">
+				<el-option
+					v-for="job in jobList"
+					:key="job.jobId"
+					:label="job.jobName"
+					:value="job.jobId">
+				</el-option>
+			</el-select>
 		</el-form-item>
 		<el-form-item>
 			<el-button
@@ -60,37 +32,49 @@
 </template>
 
 <script setup>
-	import { ref, reactive } from "vue";
+	import { ref, reactive, onMounted } from "vue";
 	import { ElMessage } from "element-plus";
 	import LHG from "@/utils/axios";
 	import { useUserStore } from "@/stores/user";
+	import { useDataStore } from "@/stores/data";
+
 	const userInfo = useUserStore().getUserInfo();
+	const dataStore = useDataStore();
 	console.log(userInfo);
+
+	const jobList = ref([]);
 	const applicationReview = reactive({
 		userId: userInfo.id,
-		jobId: 11,
+		jobId: null, // 默认为空，用户选择
 	});
+
 	const rules = {
 		applyId: [{ required: true, message: "请输入申请ID", trigger: "blur" }],
 		applicationTime: [
 			{ required: true, message: "请选择应聘时间", trigger: "change" },
 		],
-		reviewTime: [
-			{ message: "请选择审核时间", trigger: "change" },
-		],
-		reviewResult: [
-			{ message: "请输入审核结果", trigger: "blur" },
-		],
+		reviewTime: [{ message: "请选择审核时间", trigger: "change" }],
+		reviewResult: [{ message: "请输入审核结果", trigger: "blur" }],
 		reviewStatus: [
 			{ required: true, message: "请选择审核状态", trigger: "change" },
 		],
 		idNumber: [
 			{ required: true, message: "请输入身份证号码", trigger: "blur" },
 		],
-		jobId: [{ required: true, message: "请输入职位ID", trigger: "blur" }],
+		jobId: [{ required: true, message: "请选择职位", trigger: "change" }],
 	};
 
 	const applicationReviewForm = ref(null);
+
+	// 获取职位列表
+	const fetchJobList = () => {
+		jobList.value = dataStore.getPositionData();
+	};
+
+	const handleJobChange = (jobId) => {
+		const selectedJob = jobList.value.find((job) => job.jobId === jobId);
+		console.log("In AddApplication.vue selectedJob::: ", selectedJob);
+	};
 
 	const submitForm = () => {
 		applicationReviewForm.value.validate((valid) => {
@@ -125,4 +109,8 @@
 	const resetForm = () => {
 		applicationReviewForm.value.resetFields();
 	};
+
+	onMounted(() => {
+		fetchJobList();
+	});
 </script>

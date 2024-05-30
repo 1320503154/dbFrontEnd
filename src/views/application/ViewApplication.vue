@@ -29,7 +29,7 @@
 		<!-- <addApplicationDrow></addApplicationDrow> -->
 		<!-- 表格 -->
 		<el-table
-			:data="dataList"
+			:data="formattedDataList"
 			style="width: 100%"
 			@selection-change="selectionChangeHandle">
 			<el-table-column
@@ -54,6 +54,9 @@
 			<el-table-column
 				prop="jobId"
 				label="职位ID"></el-table-column>
+			<el-table-column
+				prop="jobName"
+				label="职位名称"></el-table-column>
 		</el-table>
 
 		<!-- 分页 -->
@@ -70,48 +73,40 @@
 </template>
 
 <script setup>
-	import { ref, reactive, onMounted } from "vue";
-	import addApplicationDrow from "@/views/application/addApplicationDrow.vue";
-	import { ElMessage } from "element-plus";
+	import { ref, reactive, onMounted, computed } from "vue";
+	import { ElMessage, ElMessageBox } from "element-plus";
+	import axios from "axios";
+	import { useDataStore } from "@/stores/data.js";
 	import LHG from "@/utils/axios";
 
-	// 删除
-	const deleteHandle = (id) => {
-		// 处理删除操作
-		let ids = id ? [id] : dataListSelections.value.map((item) => item.id);
-		ElMessageBox.confirm("确定对所选项进行[删除]操作?", "提示", {
-			confirmButtonText: "确定",
-			cancelButtonText: "取消",
-			type: "warning",
-		})
-			.then(() => {
-				LHG({
-					url: "/pesticide/crop/delete",
-					method: "post",
-					data: ids,
-				}).then(({ data }) => {
-					if (data && data.code === 0) {
-						ElMessage({
-							message: "操作成功",
-							type: "success",
-							duration: 1500,
-						});
-						getDataList();
-					}
-				});
-			})
-			.catch(() => {});
-	};
+	const dataStore = useDataStore();
+	const jobInfo = dataStore.getPositionData();
 
 	const searchForm = reactive({
 		idNumber: "",
 	});
-
 	const dataList = ref([]);
 	const dataListSelections = ref([]);
 	const pageIndex = ref(1);
 	const pageSize = ref(10);
 	const totalPage = ref(0);
+
+	// 构建jobId到jobName的映射
+	const jobMap = {};
+	jobInfo &&
+		jobInfo.forEach((job) => {
+			jobMap[job.jobId] = job.jobName;
+		});
+
+	// 为dataList添加职位名称
+	const formattedDataList = computed(() => {
+		return dataList.value.map((item) => {
+			return {
+				...item,
+				jobName: jobMap[item.jobId] || "未知职位",
+			};
+		});
+	});
 
 	const getDataList = () => {
 		LHG.get("/api/application-review/page", {
@@ -121,8 +116,7 @@
 				idNumber: searchForm.idNumber,
 			},
 		}).then((res) => {
-			console.log(res.data.records);
-			if (res.code == 1) {
+			if (res.data && res.code === 1) {
 				ElMessage({
 					message: "查询成功",
 					type: "success",
@@ -138,8 +132,56 @@
 		});
 	};
 
+	const deleteHandle = () => {
+		let ids = dataListSelections.value.map((item) => item.applyId);
+		// console.log("In ViewApplication.vue ids::: ", ids);//[ 17 ]
+
+		ElMessageBox.confirm("确定对所选项进行[删除]操作?", "提示", {
+			confirmButtonText: "确定",
+			cancelButtonText: "取消",
+			type: "warning",
+		})
+			.then(() => {
+				Promise.all(
+					ids.map((applyId) => {
+						return LHG({
+							url: `http://10.33.15.104:8084/api/application-review/${applyId}?applyId=${applyId}`,
+							method: "delete",
+						});
+					})
+				)
+					.then((results) => {
+						// console.log("In ViewApplication.vue results::: ", results);// [ { code: 1, message: '操作成功！', data: '删除成功' } ]
+						let allSuccess = results.every((res) => res.data && res.code === 1);
+						if (allSuccess) {
+							ElMessage({
+								message: "操作成功",
+								type: "success",
+								duration: 1500,
+							});
+							getDataList();
+						} else {
+							ElMessage({
+								message: "操作失败，部分项未能删除",
+								type: "error",
+								duration: 1500,
+							});
+						}
+					})
+					.catch((error) => {
+						ElMessage({
+							message: "操作失败",
+							type: "error",
+							duration: 1500,
+						});
+					});
+			})
+			.catch(() => {});
+	};
+
 	const selectionChangeHandle = (val) => {
 		dataListSelections.value = val;
+		console.log(dataListSelections.value);
 	};
 
 	const sizeChangeHandle = (val) => {

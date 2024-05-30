@@ -114,7 +114,7 @@
 				>
 			</el-menu-item-group>
 		</el-sub-menu>
-		<el-sub-menu index="6">
+		<!-- <el-sub-menu index="6">
 			<template #title>
 				<el-icon><document /></el-icon>
 				<span>学历查看</span>
@@ -133,7 +133,7 @@
 					>查看学历</el-menu-item
 				>
 			</el-menu-item-group>
-		</el-sub-menu>
+		</el-sub-menu> -->
 	</el-menu>
 </template>
 
@@ -153,12 +153,12 @@
 	const navigateTo = (path) => {
 		router.push(path);
 	};
-  const handleOpen = (key, keyPath) => {
-    // console.log(key, keyPath);
-  };
-  const handleClose = (key, keyPath) => {
-    // console.log(key, keyPath);
-  };
+	const handleOpen = (key, keyPath) => {
+		// console.log(key, keyPath);
+	};
+	const handleClose = (key, keyPath) => {
+		// console.log(key, keyPath);
+	};
 </script>
 
 <style scoped>

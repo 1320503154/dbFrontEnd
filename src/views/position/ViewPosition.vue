@@ -113,8 +113,8 @@
 <script setup>
 	import { ref, reactive, onMounted } from "vue";
 	import { ElMessage, ElMessageBox } from "element-plus";
-	import LHG from "@/utils/axios.js";
 
+	import LHG from "@/utils/axios.js";
 	const searchForm = reactive({
 		jobName: "",
 	});
@@ -163,6 +163,7 @@
 			pageSize: pageSize.value,
 			jobName: searchForm.jobName,
 		});
+		console.log(data);
 		if (data) {
 			showMessage("查询成功");
 			dataList.value = data.records;
@@ -182,7 +183,11 @@
 				numberRequired: form.numberRequired,
 			};
 
-			const response = await LHG.post("/api/jobrequirement/update/numberRequired", null, { params });
+			const response = await LHG.post(
+				"/api/jobrequirement/update/numberRequired",
+				null,
+				{ params }
+			);
 
 			if (response.code === 1) {
 				showMessage("更新成功");

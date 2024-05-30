@@ -1,13 +1,19 @@
 <script setup>
-	import { computed, onBeforeMount, ref, watch } from "vue";
+	import { computed, onBeforeMount, ref, watch, onMounted } from "vue";
 	import { useRoute } from "vue-router";
 	import navBarLeft from "@/components/navBarLeft.vue";
 	import { ArrowRight } from "@element-plus/icons-vue";
 	import { useUserStore } from "@/stores/user.js";
 	import { Minus, Plus } from "@element-plus/icons-vue";
+	import { useDataStore } from "@/stores/data.js";
+	import LHG from "@/utils/axios";
+
+	import { ElMessage, ElMessageBox } from "element-plus";
 
 	const route = useRoute();
 	const userStore = useUserStore();
+	const dataStore = useDataStore();
+
 	const userInfo = computed(() => userStore.userInfo);
 	console.log(userInfo.value);
 	const title = ref(route.meta.title);
@@ -41,6 +47,38 @@
 			updateBreadcrumbs();
 		}
 	);
+	const showMessage = (message, type = "success") => {
+		ElMessage({
+			message,
+			type,
+			duration: 1500,
+		});
+	};
+	const fetchData = async (url, params = {}) => {
+		try {
+			const response = await LHG.get(url, { params });
+			return response.data;
+		} catch (error) {
+			showMessage("请求错误", "error");
+			PromiseRejectionEvent(error);
+		}
+	};
+	//获取职位信息
+	const getDataList = async () => {
+		const res = await fetchData("/api/jobrequirement/page", {
+			pageIndex: 1,
+			pageSize: 100,
+			jobName: "",
+		});
+		const { records } = res;
+		if (res) {
+			dataStore.setPositionData(records);
+			console.log(dataStore.getPositionData());
+		} else {
+			showMessage("仓库存储岗位信息失败", "error");
+		}
+	};
+	getDataList();
 </script>
 
 <template>
