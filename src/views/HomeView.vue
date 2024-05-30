@@ -1,42 +1,83 @@
 <template>
-	<div class="home-view">
-		<el-row :gutter="20">
-			<el-col :span="24">
-				<el-card>
-					<h2>欢迎, {{ userInfo.username }}!</h2>
-					<p>当前用户类型: {{ userType }}</p>
-				</el-card>
-			</el-col>
-			<el-col :span="8">
-				<el-card>
-					<h3>总人才数</h3>
-					<p>{{ talentCount }}</p>
-				</el-card>
-			</el-col>
-			<el-col :span="8">
-				<el-card>
-					<h3>总职位数</h3>
-					<p>{{ positionCount }}</p>
-				</el-card>
-			</el-col>
-			<el-col :span="8">
-				<el-card>
-					<h3>总学位数</h3>
-					<p>{{ degreeCount }}</p>
-				</el-card>
-			</el-col>
-		</el-row>
-		<el-row
-			:gutter="20"
-			style="margin-top: 20px">
-			<el-col :span="24">
-				<el-card>
-					<div
-						ref="info"
-						style="width: 100%; height: 400px"></div>
-				</el-card>
-			</el-col>
-		</el-row>
+	<div class="common-layout">
+		<el-container>
+			<el-aside width="200px">
+				<nav-bar-left></nav-bar-left>
+			</el-aside>
+			<el-container>
+				<el-header
+					height="60px"
+					class="appHeader">
+					<el-breadcrumb :separator-icon="ArrowRight">
+						<el-breadcrumb-item
+							v-for="item in breadcrumbItems"
+							:key="item.text"
+							:to="item.to"
+							>{{ item.text }}</el-breadcrumb-item
+						>
+					</el-breadcrumb>
+					<el-affix
+						target=".appHeader"
+						:offset="5"
+						style="margin-left: 30px">
+						<span v-if="userInfo"
+							>当前用户:{{ userInfo.username }} 用户类型:{{
+								userInfo.userType == 1 ? "负责人" : "人才"
+							}}</span
+						>
+					</el-affix>
+					<el-button
+						type="primary"
+						@click="userStore.logout"
+						style="margin-left: 20px"
+						>退出登录</el-button
+					>
+				</el-header>
+				<el-main>
+					<div class="home-view">
+						<el-row :gutter="20">
+							<el-col
+								:span="24"
+								class="text-center">
+								<el-card>
+									<h2>欢迎, {{ userInfo.username }}!</h2>
+									<p>当前用户类型: {{ userType }}</p>
+								</el-card>
+							</el-col>
+							<el-col :span="8">
+								<el-card>
+									<h3>总人才数</h3>
+									<p>{{ talentCount }}</p>
+								</el-card>
+							</el-col>
+							<el-col :span="8">
+								<el-card>
+									<h3>总职位数</h3>
+									<p>{{ positionCount }}</p>
+								</el-card>
+							</el-col>
+							<el-col :span="8">
+								<el-card>
+									<h3>总学位数</h3>
+									<p>{{ degreeCount }}</p>
+								</el-card>
+							</el-col>
+						</el-row>
+						<el-row
+							:gutter="20"
+							style="margin-top: 20px">
+							<el-col :span="24">
+								<el-card>
+									<div
+										ref="info"
+										style="width: 100%; height: 400px"></div>
+								</el-card>
+							</el-col>
+						</el-row>
+					</div>
+				</el-main>
+			</el-container>
+		</el-container>
 	</div>
 </template>
 
@@ -44,6 +85,7 @@
 	import { onMounted, ref, inject, computed } from "vue";
 	import { useUserStore } from "@/stores/user.js";
 	import { useDataStore } from "@/stores/data.js";
+	import navBarLeft from "@/components/navBarLeft.vue";
 
 	// 通过 inject 使用 echarts
 	const echarts = inject("echarts");
@@ -83,7 +125,7 @@
 		const majorData = degreeList.value;
 		return countByMajor(majorData);
 	});
-
+	console.log(majorCount.value);
 	// 更新图表选项
 	const updateChartOption = () => {
 		if (info.value) {
@@ -95,7 +137,7 @@
 				value: majorData[key],
 				name: key,
 			}));
-
+			console.log(chartData);
 			const option = {
 				title: {
 					text: "人才学历分布",
@@ -152,8 +194,17 @@
 	});
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+	:deep(.el-header) {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+	.common-layout {
+		scroll-behavior: smooth;
+		overflow-x: hidden;
+	}
 	.home-view {
-		padding: 20px;
+		margin-top: 20px;
 	}
 </style>

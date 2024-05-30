@@ -16,6 +16,7 @@ import ViewDegree from "@/views/degree/ViewDegree.vue";
 import HomeView from "@/views/HomeView.vue";
 import AboutView from "@/views/AboutView.vue";
 import LoginView from "@/views/LoginView.vue";
+import MainLayout from "@/layouts/MainLayout.vue";
 import { useUserStore } from "@/stores/user.js";
 
 const routes = [
@@ -58,7 +59,7 @@ const routes = [
 	{
 		path: "/talent",
 		name: "Talent",
-		component: HomeView,
+		component: MainLayout,
 		meta: {
 			requiresAuth: true,
 			title: "人才",
@@ -99,7 +100,7 @@ const routes = [
 	{
 		path: "/application",
 		name: "Application",
-		component: HomeView,
+		component: MainLayout,
 		meta: {
 			requiresAuth: true,
 			title: "申请",
@@ -140,7 +141,7 @@ const routes = [
 	{
 		path: "/position",
 		name: "Position",
-		component: HomeView,
+		component: MainLayout,
 		meta: {
 			requiresAuth: true,
 			title: "岗位",
@@ -181,7 +182,7 @@ const routes = [
 	{
 		path: "/company",
 		name: "Company",
-		component: HomeView,
+		component: MainLayout,
 		meta: {
 			requiresAuth: true,
 			title: "公司",
@@ -222,7 +223,7 @@ const routes = [
 	{
 		path: "/manager",
 		name: "Manager",
-		component: HomeView,
+		component: MainLayout,
 		meta: {
 			requiresAuth: true,
 			title: "经理",
@@ -263,7 +264,7 @@ const routes = [
 	{
 		path: "/degree",
 		name: "Degree",
-		component: HomeView,
+		component: MainLayout,
 		meta: {
 			requiresAuth: true,
 			title: "学位",

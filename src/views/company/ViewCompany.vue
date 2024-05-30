@@ -259,7 +259,7 @@
 			.then(() => {
 				const ids = dataListSelections.value.map((item) => item.companyId);
 				LHG({
-					method: "delete",
+					method: "post",
 					url: "/api/company/delete",
 					data: {
 						companyIds: ids,
@@ -287,9 +287,9 @@
 		})
 			.then(() => {
 				LHG({
-					method: "delete",
+					method: "post",
 					url: `/api/company/delete`,
-					params: {
+					data: {
 						companyName: companyName,
 					},
 				}).then((res) => {
