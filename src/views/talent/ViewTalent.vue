@@ -48,7 +48,7 @@
 
 		<!-- 表格 -->
 		<el-table
-			:data="dataList"
+			:data="enhancedDataList"
 			style="width: 100%"
 			@selection-change="selectionChangeHandle">
 			<el-table-column
@@ -61,6 +61,12 @@
 			<el-table-column
 				prop="name"
 				label="姓名"></el-table-column>
+			<el-table-column
+				label="学校"
+				prop="schoolName"></el-table-column>
+			<el-table-column
+				label="学历"
+				prop="major"></el-table-column>
 			<el-table-column
 				prop="idNumber"
 				label="身份证号"></el-table-column>
@@ -174,10 +180,15 @@
 </template>
 
 <script setup>
-	import { ref, reactive, onMounted } from "vue";
+	import { ref, reactive, onMounted, computed } from "vue";
 	import { useRouter } from "vue-router";
 	import LHG from "@/utils/axios.js";
 	import { ElMessage, ElMessageBox } from "element-plus";
+
+	import { useDataStore } from "@/stores/data";
+	const dataStore = useDataStore();
+	const degreeList = dataStore.getDegreeData();
+	console.log("In ViewTalent.vue degreeList::: ", degreeList);
 
 	const router = useRouter();
 
@@ -208,7 +219,7 @@
 	const updateData = (row) => {
 		// 填充编辑表单的数据
 		console.log(row);
-		editForm.userId=row.userId;
+		editForm.userId = row.userId;
 		editForm.name = row.name;
 		editForm.idNumber = row.idNumber;
 		editForm.phoneNumber = row.phoneNumber;
@@ -232,6 +243,7 @@
 				phoneNumber: searchForm.phoneNumber,
 			},
 		}).then((res) => {
+			console.log("In ViewTalent.vue getDataList res::: ", res);
 			if (res && res.code === 1) {
 				ElMessage({
 					message: "查询成功",
@@ -249,12 +261,27 @@
 			}
 		});
 	};
+	//通过仓库缓存的学位信息,获取学位名称,存储到talentList中,用于显示
+	const enhancedDataList = computed(() => {
+		return dataList.value.map((item) => {
+			const degree = degreeList.find(
+				(degree) => degree.idNumber == item.idNumber
+			);
+			console.log("In ViewTalent.vue enhancedDataList degree::: ", degree);
+			return {
+				...item,
+				schoolName: degree ? degree.schoolName : "获取不到学校名称",
+				major: degree ? degree.major : "获取不到学历",
+			};
+		});
+	});
+
 	const updateTalentInfo = () => {
 		LHG({
 			method: "post",
 			url: "/api/talent/update",
 			data: {
-				userId:editForm.userId,
+				userId: editForm.userId,
 				idNumber: editForm.idNumber,
 				name: editForm.name,
 				gender: editForm.gender,

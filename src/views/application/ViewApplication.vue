@@ -5,11 +5,41 @@
 			inline
 			@submit.prevent="getDataList"
 			:model="searchForm">
-			<el-form-item>
+			<el-form-item label="用户ID">
 				<el-input
-					v-model="searchForm.idNumber"
-					placeholder="请输入身份证号码"
+					v-model="searchForm.userId"
+					placeholder="请输入用户ID"
 					clearable></el-input>
+			</el-form-item>
+			<el-form-item label="审核状态">
+				<el-select
+					clearable
+					style="width: 200px"
+					v-model="searchForm.reviewStatus"
+					placeholder="请选择审核状态">
+					<el-option
+						label="通过"
+						value="1"></el-option>
+					<el-option
+						label="不通过"
+						value="2"></el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="工作职位">
+				<el-select
+					clearable
+					v-model="searchForm.jobId"
+					filterable
+					style="width: 200px"
+					placeholder="请选择职位"
+					@change="handleJobChange">
+					<el-option
+						v-for="job in jobList"
+						:key="job.jobId"
+						:label="job.jobName"
+						:value="job.jobId">
+					</el-option>
+				</el-select>
 			</el-form-item>
 			<el-form-item>
 				<el-button
@@ -136,9 +166,6 @@
 	const dataStore = useDataStore();
 	const jobInfo = dataStore.getPositionData();
 
-	const searchForm = reactive({
-		idNumber: "",
-	});
 	const dataList = ref([]);
 	const dataListSelections = ref([]);
 	const pageIndex = ref(1);
@@ -155,7 +182,7 @@
 	const showEdit = (row) => {
 		console.log(row);
 		editForm.reviewResult = row.reviewResult;
-		editForm.reviewStatus = row.reviewStatus;
+		editForm.reviewStatus = row.reviewStatus == "通过" ? 1 : 0;
 		editForm.applyId = row.applyId;
 		console.log(editForm);
 		dialogEditVisible.value = true;
@@ -177,15 +204,27 @@
 			};
 		});
 	});
-
+	//查询相关
+	const handleJobChange = (jobId) => {
+		const selectedJob = jobList.value.find((job) => job.jobId === jobId);
+		console.log("In AddApplication.vue selectedJob::: ", selectedJob);
+	};
+	const searchForm = reactive({
+		reviewStatus: "",
+		jobId: "",
+		userId: "",
+	});
 	const getDataList = () => {
 		LHG.get("/api/application-review/page", {
 			params: {
 				pageIndex: pageIndex.value,
 				pageSize: pageSize.value,
-				idNumber: searchForm.idNumber,
+				reviewStatus: searchForm.reviewStatus,
+				jobId: searchForm.jobId,
+				userId: searchForm.userId,
 			},
 		}).then((res) => {
+			console.log("In ViewApplication.vue res::: ", res);
 			if (res.data && res.code === 1) {
 				ElMessage({
 					message: "查询成功",
@@ -201,6 +240,7 @@
 			}
 		});
 	};
+	//update relation
 	const updateData = (row) => {
 		console.log(editForm);
 		let requestOptions = {
@@ -294,8 +334,13 @@
 		pageIndex.value = val;
 		getDataList();
 	};
-
+	const jobList = ref([]);
+	// 获取职位列表
+	const fetchJobList = () => {
+		jobList.value = dataStore.getPositionData();
+	};
 	onMounted(() => {
 		getDataList();
+		fetchJobList();
 	});
 </script>

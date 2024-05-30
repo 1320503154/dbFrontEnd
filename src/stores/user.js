@@ -24,7 +24,7 @@ export const useUserStore = defineStore(
 			return userInfo.value.token;
 		}
 		function logout() {
-			userInfo.value = {};
+			userInfo.value = null;
 			router.push("/login");
 		}
 		//pinia持久化插件在组合式函数下,只有返回要持久化的数据才会生效,此处必须返回userInfo和companyInfo

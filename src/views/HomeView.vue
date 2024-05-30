@@ -63,22 +63,65 @@
 			PromiseRejectionEvent(error);
 		}
 	};
-	//获取职位信息
-	const getDataList = async () => {
-		const res = await fetchData("/api/jobrequirement/page", {
-			pageIndex: 1,
-			pageSize: 100,
-			jobName: "",
-		});
-		const { records } = res;
-		if (res) {
-			dataStore.setPositionData(records);
-			console.log(dataStore.getPositionData());
-		} else {
-			showMessage("仓库存储岗位信息失败", "error");
+	onMounted(() => {
+		//获取职位信息
+		const getJobList = async () => {
+			const res = await fetchData("/api/jobrequirement/page", {
+				pageIndex: 1,
+				pageSize: 100,
+				jobName: "",
+			});
+			const { records } = res;
+			if (res) {
+				dataStore.setPositionData(records);
+				console.log(dataStore.getPositionData());
+			} else {
+				showMessage("仓库存储岗位信息失败", "error");
+			}
+		};
+		//获取人才信息
+		const getTalentList = async () => {
+			const res = await fetchData("/api/talent/page", {
+				pageIndex: 1,
+				pageSize: 100,
+				name: "",
+				idNumber: "",
+				phoneNumber: "",
+			});
+			const { records } = res;
+			if (res) {
+				dataStore.setTalentData(records);
+				console.log(dataStore.getTalentData());
+			} else {
+				showMessage("仓库存储人才信息失败", "error");
+			}
+		};
+		//获取学历信息
+		const getDegreeList = async () => {
+			const res = await fetchData("/api/education/page", {
+				pageIndex: 1,
+				pageSize: 100,
+				schoolName: "",
+				idNumber: "",
+			});
+			const { records } = res;
+			if (res) {
+				dataStore.setDegreeData(records);
+				console.log(dataStore.getDegreeData());
+			} else {
+				showMessage("仓库存储学历信息失败", "error");
+			}
+		};
+		if (!dataStore.getPositionData().length) {
+			getJobList();
 		}
-	};
-	getDataList();
+		if (!dataStore.getTalentData().length) {
+			getTalentList();
+		}
+		if (!dataStore.getDegreeData().length) {
+			getDegreeList();
+		}
+	});
 </script>
 
 <template>
