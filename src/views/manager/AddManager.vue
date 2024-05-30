@@ -68,7 +68,7 @@
 	import { useUserStore } from "@/stores/user";
 	import LHG from "@/utils/axios";
 	import { getManagerList } from "@/api/manager";
-	import { useUserStore } from "@/stores/user";
+
 	const userInfo = useUserStore().getUserInfo();
 	const formSize = ref("default");
 	const ruleFormRef = ref();

@@ -84,7 +84,6 @@
 	import { ElMessage } from "element-plus";
 	import { useUserStore } from "@/stores/user";
 	import LHG from "@/utils/axios";
-	import { useUserStore } from "@/stores/user";
 	const userInfo = useUserStore().getUserInfo();
 	console.log(userInfo.id);
 	const formSize = ref("default");
