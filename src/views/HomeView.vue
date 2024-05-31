@@ -96,6 +96,7 @@
 	// 使用 store 获取用户和数据
 	const userStore = useUserStore();
 	const dataStore = useDataStore();
+	console.log(dataStore.getDegreeData());
 
 	// 计算属性
 	const userInfo = computed(() => userStore.userInfo);

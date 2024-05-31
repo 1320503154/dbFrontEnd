@@ -9,7 +9,6 @@ import * as components from "vuetify/components";
 import * as directives from "vuetify/directives";
 import App from "./App.vue";
 import router from "./router";
-import { useRouteStore } from "@/stores/route";
 
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);
@@ -21,15 +20,12 @@ const vuetify = createVuetify({
 
 const app = createApp(App);
 
-app.use(ElementPlus);
 app.use(pinia);
-app.use(router);
-app.use(vuetify);
 
-const routeStore = useRouteStore();
-router.beforeEach((to, from, next) => {
-	routeStore.setCurrentRoute(to);
-	next();
-});
+app.use(ElementPlus);
+
+app.use(router);
+
+app.use(vuetify);
 
 app.mount("#app");

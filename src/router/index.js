@@ -17,7 +17,6 @@ import HomeView from "@/views/HomeView.vue";
 import AboutView from "@/views/AboutView.vue";
 import LoginView from "@/views/LoginView.vue";
 import MainLayout from "@/layouts/MainLayout.vue";
-import { useUserStore } from "@/stores/user.js";
 
 const routes = [
 	{
@@ -307,32 +306,6 @@ const routes = [
 const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
 	routes,
-});
-
-// 全局前置守卫
-router.beforeEach((to, from, next) => {
-	const userStore = useUserStore();
-	const userInfo = userStore.getUserInfo();
-	let isAuthenticated = false;
-	if (userInfo) {
-		isAuthenticated = true;
-	} else {
-		isAuthenticated = false;
-	}
-
-	if (to.matched.some((record) => record.meta.requiresAuth)) {
-		// 需要认证的路由
-		if (!isAuthenticated) {
-			// 用户未认证，重定向到登录页面或其他处理
-			next({ name: "Login" }); // 如果有登录页面的路由名为 'Login'
-		} else {
-			// 用户已认证，放行
-			next();
-		}
-	} else {
-		// 不需要认证的路由，直接放行
-		next();
-	}
 });
 
 export default router;

@@ -1,5 +1,5 @@
-import { ref } from "/node_modules/.vite/deps/vue.js?v=a8235f76";
-import { defineStore } from "/node_modules/.vite/deps/pinia.js?v=a8235f76";
+import { ref } from "vue";
+import { defineStore } from "pinia";
 import router from "/src/router/index.js";
 
 export const useUserStore = defineStore(
