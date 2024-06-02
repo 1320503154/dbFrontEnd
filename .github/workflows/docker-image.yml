@@ -37,7 +37,7 @@ jobs:
         context: .  # Docker 上下文路径
         file: ./Dockerfile  # Dockerfile路径
         push: true  # 执行推送操作
-        tags: ${{ secrets.DOCKER_USERNAME }}/your-repo-name:latest  # Docker 镜像标签
+        tags: 1320503154lhg/dbfrontend:latest  # Docker 镜像标签
 
     - name: Logout from Docker Hub  # 步骤：从 Docker Hub 注销
       run: docker logout  # 执行 docker 注销命令
