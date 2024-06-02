@@ -8,10 +8,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest  # 在最新版 Ubuntu 上运行任务
+    environment: docker  # 指定环境为 Docker
 
     steps:
     - name: Checkout repository  # 步骤：检出代码仓库
-      uses: actions/checkout@v2  # 使用 GitHub 提供的 checkout 动作（动作版本 2）
+      uses: actions/checkout@v2  # 使用 GitHub 提供的 checkout 动作（版本 2）
 
     - name: Set up Docker Buildx  # 步骤：设置 Docker Buildx
       uses: docker/setup-buildx-action@v1  # 使用 Docker 提供的 setup-buildx-action 动作（版本 1）
@@ -36,7 +37,7 @@ jobs:
         context: .  # Docker 上下文路径
         file: ./Dockerfile  # Dockerfile路径
         push: true  # 执行推送操作
-        tags: ${{ secrets.DOCKER_USERNAME }}/dbfrontend:latest  # Docker 镜像标签
+        tags: ${{ secrets.DOCKER_USERNAME }}/your-repo-name:latest  # Docker 镜像标签
 
     - name: Logout from Docker Hub  # 步骤：从 Docker Hub 注销
       run: docker logout  # 执行 docker 注销命令
