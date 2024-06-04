@@ -162,7 +162,9 @@
 					type: "success",
 					duration: 1500,
 				});
-				// 可以在这里添加实际的删除逻辑
+				dataListSelections.value.forEach((item) => {
+					deleteHandle(item.personId);
+				});
 			})
 			.catch(() => {});
 	};
@@ -177,7 +179,7 @@
 			.then(() => {
 				LHG({
 					method: "delete",
-					url: `/api/responsibleperson/${id}`,
+					url: `/api/responsibleperson/delete/${id}`,
 				}).then((res) => {
 					if (res && res.code == 1) {
 						ElMessage({

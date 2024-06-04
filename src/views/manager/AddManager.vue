@@ -9,14 +9,6 @@
 		:size="formSize"
 		status-icon>
 		<el-form-item
-			label="负责人职工号"
-			prop="idNumber">
-			<el-input
-				placeholder="此处输入你的职工号"
-				v-model="ruleForm.idNumber" />
-		</el-form-item>
-
-		<el-form-item
 			label="姓名"
 			prop="name">
 			<el-input v-model="ruleForm.name" />
@@ -72,10 +64,8 @@
 	const userInfo = useUserStore().getUserInfo();
 	const formSize = ref("default");
 	const ruleFormRef = ref();
-	const UserId = ref((ruleFormRef.idNumber / 3) % 10000);
 	const ruleForm = reactive({
 		userId: userInfo.id,
-		idNumber: "1234567",
 		name: "张三",
 		email: "1320503154@qq.com",
 		phoneNumber: "13772763778",
@@ -83,13 +73,6 @@
 	});
 
 	const rules = reactive({
-		idNumber: [
-			{
-				required: true,
-				message: "请输入你的身份证",
-				trigger: "blur",
-			},
-		],
 		name: [
 			{
 				required: true,
